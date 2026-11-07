@@ -49,12 +49,15 @@ akr-dots includes an interactive Wallpaper Selector (**`SUPER` + `W`**) with dyn
 
 ---
 
-## 📸 Interactive Screenshot Experience (PRTSCR / GNOME UI)
+## 📸 Native GNOME-Style Screenshot Experience (Default `PRTSCR` Keybind)
 
-- **Dedicated `Print` (PRTSCR) Keybind**: Pressing `Print` (or `F6`) alone directly invokes the interactive GNOME Screenshot UI dialog, replacing the old multi-key `SUPER + Print` requirement.
-- **Interactive Controls**: Choose between capturing an interactive area selection, the full screen, or a specific window with optional delay and cursor capture.
-- **Graceful Fallback**: If `gnome-screenshot` is not present, automatically falls back to Swappy/Grim interactive selection (`ScreenShot.sh --swappy`).
-- **Floating Window Rule**: Pre-configured in `lua/window_rules.lua` to float and center smoothly in Hyprland without disrupting tiled window layouts.
+- **Default Out-of-the-Box Behavior**: In `akr-dots`, pressing the **`PRTSCR` / `Print`** button immediately triggers the GNOME interactive screenshot interface by default—no awkward multi-key modifiers like `SUPER + Print` required.
+- **Laptop Friendly (`F6` Alternative)**: For laptops and compact keyboards without a dedicated physical Print Screen button, pressing **`F6`** triggers the exact same interactive interface out of the box.
+- **Full Interactive Controls**:
+  - Interactively select custom rectangular screen regions, grab an active window, or capture the whole desktop.
+  - Toggle cursor capture and set optional countdown delay timers.
+- **Zero-Breakage Graceful Fallback**: If `gnome-screenshot` is ever missing on a minimal distro installation, `ScreenShot.sh` automatically and seamlessly falls back to Swappy/Grim interactive selection (`ScreenShot.sh --swappy`), so screenshot functionality is guaranteed 100% of the time.
+- **Dedicated Floating Window Rule**: Built directly into `lua/window_rules.lua` to float and center the screenshot dialog automatically without disrupting tiled workspaces.
 
 ---
 

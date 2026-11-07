@@ -53,6 +53,12 @@
 --    bind("CTRL ALT", "bracketright", exec_cmd("$HOME/.config/hypr/scripts/Brightness.sh --inc"), { description = "Brightness up", repeating = true })
 --    bind("", "XF86AudioMute", exec_cmd("$HOME/.config/hypr/scripts/Volume.sh --toggle"), { description = "Mute audio", locked = true })
 --
+-- 6. SCREENSHOT KEYBINDS (PRTSCR / F6):
+--    -- By default in akr-dots, pressing PRTSCR (or F6) launches the GNOME interactive screenshot UI.
+--    -- To customize what PRTSCR does, unbind and bind:
+--    -- unbind("", "Print")
+--    -- bind("", "Print", exec_cmd("$HOME/.config/hypr/scripts/ScreenShot.sh --now"), { description = "Instant full screenshot" })
+--
 -- =============================================================================
 local user_keybinds_helper = nil
 local submap_helper = nil
