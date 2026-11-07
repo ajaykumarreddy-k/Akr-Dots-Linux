@@ -32,14 +32,24 @@ detect_nvidia_adjust() {
   fi
   if [ "$has_nvidia" -eq 1 ]; then
     echo "${INFO:-[INFO]} Nvidia GPU detected. Setting up proper env's and configs" 2>&1 | tee -a "$log" || true
-    if [ -f config/hypr/lua/env.lua ]; then
-      sed -i 's/^--[[:space:]]*hl\.env("LIBVA_DRIVER_NAME"/hl.env("LIBVA_DRIVER_NAME"/' config/hypr/lua/env.lua
-      sed -i 's/^--[[:space:]]*hl\.env("__GLX_VENDOR_LIBRARY_NAME"/hl.env("__GLX_VENDOR_LIBRARY_NAME"/' config/hypr/lua/env.lua
-      sed -i 's/^--[[:space:]]*hl\.env("NVD_BACKEND"/hl.env("NVD_BACKEND"/' config/hypr/lua/env.lua
-      sed -i 's/^--[[:space:]]*hl\.env("GSK_RENDERER"/hl.env("GSK_RENDERER"/' config/hypr/lua/env.lua
-    fi
     if [ "$has_intel" -eq 1 ] || [ "$has_amd" -eq 1 ]; then
       echo "${INFO:-[INFO]} Hybrid GPU detected (Intel/NVIDIA or AMD/NVIDIA). Applying cursor handoff fixes." 2>&1 | tee -a "$log" || true
+      # On hybrid systems, display output is driven by the integrated GPU (Intel/AMD).
+      # Forcing global LIBVA_DRIVER_NAME=nvidia and __GLX_VENDOR_LIBRARY_NAME=nvidia
+      # breaks iGPU Wayland compositing and causes Chromium/Electron DMA-BUF texture corruption.
+      # Only set them on pure dedicated NVIDIA systems; keep them disabled on hybrid setups.
+      if [ -f config/hypr/lua/env.lua ]; then
+        sed -i 's/^hl\.env("LIBVA_DRIVER_NAME"/-- hl.env("LIBVA_DRIVER_NAME"/' config/hypr/lua/env.lua
+        sed -i 's/^hl\.env("__GLX_VENDOR_LIBRARY_NAME"/-- hl.env("__GLX_VENDOR_LIBRARY_NAME"/' config/hypr/lua/env.lua
+      fi
+    else
+      # Pure dedicated NVIDIA system (desktop or dGPU-only mode)
+      if [ -f config/hypr/lua/env.lua ]; then
+        sed -i 's/^--[[:space:]]*hl\.env("LIBVA_DRIVER_NAME"/hl.env("LIBVA_DRIVER_NAME"/' config/hypr/lua/env.lua
+        sed -i 's/^--[[:space:]]*hl\.env("__GLX_VENDOR_LIBRARY_NAME"/hl.env("__GLX_VENDOR_LIBRARY_NAME"/' config/hypr/lua/env.lua
+        sed -i 's/^--[[:space:]]*hl\.env("NVD_BACKEND"/hl.env("NVD_BACKEND"/' config/hypr/lua/env.lua
+        sed -i 's/^--[[:space:]]*hl\.env("GSK_RENDERER"/hl.env("GSK_RENDERER"/' config/hypr/lua/env.lua
+      fi
     fi
     # 1 = don't use hardware cursors. NVIDIA needs software cursors, hybrids
     # included: the cursor plane has to be handed between the iGPU and the dGPU,

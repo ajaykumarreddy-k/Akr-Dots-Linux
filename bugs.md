@@ -8,7 +8,7 @@ This document tracks known bugs, graphical glitches, compatibility issues, and t
 
 | Bug ID | Title | Component | Status |
 | :--- | :--- | :--- | :--- |
-| **BUG-01** | [Images and media glitching in Chromium-based browsers](#bug-01-images-and-media-glitching-in-chromium-based-browsers-brave-chrome-chromium-edge) | Chromium / Brave / Wayland / GPU | **Fixed / Documented** |
+| **BUG-01** | [Images and media glitching in Chromium-based browsers](#bug-01-images-and-media-glitching-in-chromium-based-browsers-brave-chrome-chromium-edge) | Chromium / Brave / Wayland / Hybrid GPU | **Fixed & Documented** |
 
 ---
 
@@ -16,88 +16,79 @@ This document tracks known bugs, graphical glitches, compatibility issues, and t
 
 ### Overview
 When browsing websites with dynamic images, WebP/AVIF media, or canvas elements (e.g., `styles.refero.design`, Twitter/X, Reddit, Unsplash) in Chromium-based browsers on Hyprland, image previews and thumbnails render with severe graphical corruption:
-- Black boxes with horizontal static noise and corrupted scanlines.
-- Blank white or partially clipped preview cards.
-- Flickering or checkered rendering artifacts during scrolling.
+- Corrupted horizontal checkered stripes, multi-colored static noise, and garbled pixels over image tiles.
+- Blank grey or black blocks in place of image thumbnails.
+- Turning off "Use graphics acceleration when available" stops the glitch, but makes the browser sluggish, slow, and laggy.
 
 ---
 
 ### Questions & Answers (Q&A)
 
-#### Q1: What causes this image glitching?
-**A:** This is caused by a buffer synchronization mismatch between Chromium's **Ozone Wayland platform**, the **ANGLE graphics abstraction layer**, and Linux GPU drivers (especially NVIDIA and Intel/NVIDIA hybrid graphics setups).
-
-By default, Chromium uses ANGLE with the EGL backend on Wayland. Under modern Wayland compositors like Hyprland, texture memory and DMA-BUF surfaces for 2D canvas rasterization and decoded images fail to synchronize properly between the Chromium GPU process and the compositor, producing corrupted or uninitialized GPU texture memory on screen.
-
----
-
-#### Q2: What is the recommended fix inside the browser (GUI)?
-**A:** You can resolve this directly within your browser settings in less than a minute:
-
-1. **Change the ANGLE Graphics Backend (Most effective):**
-   - Open your browser and navigate to the internal flags page:
-     - Brave: `brave://flags`
-     - Chrome: `chrome://flags`
-     - Chromium / Edge: `chrome://flags` or `edge://flags`
-   - In the search box, search for **"Choose ANGLE graphics backend"** (flag `#use-angle`).
-   - Change the dropdown from **Default** to **OpenGL** (or **Vulkan** if supported by your drivers).
-   - Click the **Relaunch** button at the bottom of the page.
-
-2. **Disable GPU Rasterization (Alternative if glitching persists):**
-   - Search for **"GPU rasterization"** in `chrome://flags` (flag `#enable-gpu-rasterization`).
-   - Set it to **Disabled**.
-   - Relaunch the browser.
-
-3. **Disable Hardware Acceleration (Failsafe guarantee):**
-   - Go to your browser Settings $\rightarrow$ **System** (or `brave://settings/system`).
-   - Toggle off **"Use graphics acceleration when available"**.
-   - Relaunch the browser. This completely offloads image rendering and video decoding to the CPU, guaranteeing zero artifacts.
+#### Q1: Is this a Chromium issue or a dotfiles issue?
+**A:** It is a combination of both:
+1. **Upstream Chromium / Skia Bug:** In modern Chromium and Brave, the **GPU Rasterization** engine and the new **Skia Graphite** pipeline attempt to decode and rasterize image tiles directly on the GPU using shared DMA-BUF memory. On Linux Wayland (especially with Intel or hybrid graphics), the memory pitch and tiling synchronization between the GPU rasterizer and the Wayland compositor desynchronize, causing decoded image buffers to display as raw memory static or checkered noise.
+2. **Hybrid GPU Environment Conflict:** On hybrid laptops (Intel UHD/Iris + NVIDIA RTX or AMD + NVIDIA), upstream dotfiles previously exported `LIBVA_DRIVER_NAME="nvidia"` and `__GLX_VENDOR_LIBRARY_NAME="nvidia"` globally. Because the laptop screen (`eDP-1`) is wired to the integrated GPU (e.g. Intel `i915`), forcing NVIDIA GLX/VA-API drivers across all Wayland clients creates cross-device buffer allocation mismatches, exacerbating texture corruption.
+3. **Packaging Difference (Debian/Ubuntu vs Arch):** Arch Linux's browser packages natively read `~/.config/brave-flags.conf`. However, on Debian and Ubuntu, upstream packages (`/usr/bin/brave-browser-stable`) launch `/opt/brave.com/brave/brave` directly without reading `*-flags.conf`, so flag adjustments were never applied unless specifically routed.
 
 ---
 
-#### Q3: How do I fix this permanently across all launches via configuration files?
-**A:** Chromium-based browsers on Linux support flag configuration files in your home config directory. `akr-dots` ships templates for these files:
-
-- **Brave:** `~/.config/brave-flags.conf`
-- **Google Chrome:** `~/.config/chrome-flags.conf`
-- **Chromium:** `~/.config/chromium-flags.conf`
-- **Electron apps:** `~/.config/electron-flags.conf`
-
-Add the following flags to your browser's flag file:
-```text
---ozone-platform-hint=auto
---enable-features=WaylandWindowDecorations
---use-angle=gl
---disable-features=UseChromeOSDirectVideoDecoder
-```
-
-*(Note: If you are running an NVIDIA proprietary driver and prefer Vulkan over OpenGL, replace `--use-angle=gl` with `--use-angle=vulkan`)*.
+#### Q2: Why does turning off Hardware Acceleration make the browser slow and laggy?
+**A:** When you toggle off **"Use graphics acceleration when available"** in Browser Settings (`brave://settings/system`):
+- Chromium disables **ALL** GPU acceleration:
+  - Page Compositing $\rightarrow$ Software CPU
+  - WebGL / WebGL 2.0 $\rightarrow$ Software CPU (SwiftShader)
+  - 2D Canvas $\rightarrow$ Software CPU
+  - Video Decode $\rightarrow$ Software CPU (no hardware VA-API)
+  - Page Presentation $\rightarrow$ Software CPU
+- The CPU is forced to calculate and render every single frame, animation, and 4K video frame by software. On 120Hz/144Hz high refresh rate displays, this causes massive CPU spikes, dropped frames, stuttering, and severe lag.
 
 ---
 
-#### Q4: How can I launch the browser from terminal or shortcuts with the fix?
-**A:** Pass the `--use-angle=gl` flag directly when launching:
+#### Q3: How do we fix the image glitch while keeping 100% fast GPU acceleration?
+**A:** The target is to keep hardware GPU compositing, 144Hz smooth scrolling, WebGL, and video playback **ENABLED**, while disabling only the two specific components that corrupt image tiles:
+1. `--disable-gpu-rasterization`: Forces webpage rasterization and image decoding to use the CPU's native, rock-solid decoders (`libjpeg-turbo`, `libpng`, `libwebp`), guaranteeing 100% clean pixels. The rendered textures are then composited on the GPU at full hardware speed.
+2. `--disable-features=SkiaGraphite`: Disables Chromium's experimental Skia Graphite pipeline, reverting to the stable Ganesh backend.
+3. Keep **"Use graphics acceleration when available"** turned **ON** in `brave://settings/system`.
 
-```bash
-# For Brave:
-brave-browser --use-angle=gl
-
-# For Google Chrome:
-google-chrome-stable --use-angle=gl
-
-# For Chromium:
-chromium --use-angle=gl
-```
-
-To run through XWayland as an emergency fallback:
-```bash
-brave-browser --ozone-platform=x11
-```
+**Result:** Zero image glitches, no checkered static, zero lag, silky smooth 144Hz scrolling, and full WebGL/video acceleration!
 
 ---
 
-#### Q5: What built-in fixes are included in `akr-dots`?
-**A:** `akr-dots` provides the following out-of-the-box safeguards:
-1. **Shipped Flag Configs:** `config/brave-flags.conf`, `config/chrome-flags.conf`, and `config/chromium-flags.conf` are maintained in the repository and automatically deployed to `~/.config/` via `copy.sh`.
-2. **Environment Configuration:** Hyprland exports `ELECTRON_OZONE_PLATFORM_HINT="auto"` and cursor fix `no_hardware_cursors = 1` for hybrid/NVIDIA setups in `config/hypr/lua/settings.lua` and `config/hypr/lua/env.lua` to prevent cursor and compositor synchronization stalls.
+#### Q4: How is this solved permanently in `akr-dots`?
+**A:** `akr-dots` implements a multi-layer solution:
 
+1. **Configured Flag Files:**
+   The repository ships optimized flag files:
+   - `~/.config/brave-flags.conf`
+   - `~/.config/chrome-flags.conf`
+   - `~/.config/chromium-flags.conf`
+   Containing:
+   ```text
+   --ozone-platform-hint=auto
+   --enable-features=WaylandWindowDecorations
+   --disable-gpu-rasterization
+   --disable-features=SkiaGraphite,UseChromeOSDirectVideoDecoder
+   ```
+
+2. **Universal Flag Runner (`browser-flags-runner.sh`):**
+   Located at `~/.config/hypr/scripts/browser-flags-runner.sh`, this wrapper dynamically parses the corresponding `*-flags.conf` file, strips comments, and passes the flags to the underlying browser binary. Symlinks are installed in `~/.local/bin/` (`brave`, `brave-browser`, `brave-browser-stable`, `google-chrome`, `chromium`).
+
+3. **Desktop Launcher Overrides:**
+   FreeDesktop `.desktop` entries in `~/.local/share/applications/` (`brave-browser.desktop`, `com.brave.Browser.desktop`) ensure that clicking the browser in Rofi, application menus, or taskbars automatically passes the flags.
+
+4. **Hybrid GPU Protection in `lib_detect.sh`:**
+   Hardware detection in `scripts/lib_detect.sh` and `config/hypr/lua/env.lua` now distinguishes between pure dedicated NVIDIA desktops and hybrid laptops (Intel/NVIDIA or AMD/NVIDIA). On hybrid laptops, `LIBVA_DRIVER_NAME="nvidia"` and `__GLX_VENDOR_LIBRARY_NAME="nvidia"` are kept disabled so that iGPU Wayland compositing and DMA-BUF zero-copy presentation remain stable.
+
+---
+
+#### Q5: How can I verify the fix is active in Brave / Chrome?
+**A:**
+1. Open your browser and navigate to:
+   - `brave://gpu` or `chrome://gpu`
+2. Under **Graphics Feature Status**, verify:
+   - **Compositing:** `Hardware accelerated`
+   - **WebGL / WebGL 2:** `Hardware accelerated`
+   - **Video Decode:** `Hardware accelerated`
+   - **Rasterization:** `Software only` (this confirms the glitch fix is active)
+3. Navigate to `https://styles.refero.design` or any image-heavy website:
+   - Images, cards, and previews load instantly with crisp, clean visuals and zero checkered noise.

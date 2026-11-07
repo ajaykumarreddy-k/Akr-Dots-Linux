@@ -409,12 +409,119 @@ copy_phase2() {
 
   install_terminal_configs "$log"
 
-  # Browser flags (Brave, Chrome, Chromium) for Wayland/ANGLE stability
+  # Browser flags and wrapper runners (Brave, Chrome, Chromium) for Wayland & GPU stability
+  install_browser_flags_and_wrappers "$log"
+}
+
+# Install browser flags configuration and launcher wrappers so Debian/Ubuntu/Arch
+# desktop launchers consistently pass flags for Wayland and hybrid GPU stability (BUG-01)
+install_browser_flags_and_wrappers() {
+  local log="${1:-/dev/null}"
+  local base="${DOTFILES_DIR:-.}"
+  local cfg_dir="${XDG_CONFIG_HOME:-$HOME/.config}"
+  local bin_dir="${HOME}/.local/bin"
+  local app_dir="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
+  local runner="$cfg_dir/hypr/scripts/browser-flags-runner.sh"
+
+  mkdir -p "$cfg_dir" "$bin_dir" "$app_dir"
+
+  # Copy flags configurations
   for flag_file in brave-flags.conf chrome-flags.conf chromium-flags.conf; do
     if [ -f "$base/config/$flag_file" ]; then
-      cp -n "$base/config/$flag_file" "${XDG_CONFIG_HOME:-$HOME/.config}/$flag_file" 2>/dev/null || true
+      cp -f "$base/config/$flag_file" "$cfg_dir/$flag_file" 2>/dev/null || true
     fi
   done
+
+  # Deploy runner script to user bin
+  if [ -f "$runner" ]; then
+    chmod +x "$runner" 2>/dev/null || true
+    for alias_name in brave brave-browser brave-browser-stable google-chrome google-chrome-stable chromium chromium-browser; do
+      ln -sf "$runner" "$bin_dir/$alias_name" 2>/dev/null || true
+    done
+  fi
+
+  # Deploy desktop entries so FreeDesktop launchers (Rofi, drun, menus) use flags wrapper
+  if command -v brave-browser-stable >/dev/null 2>&1 || [ -x /opt/brave.com/brave/brave ]; then
+    cat > "$app_dir/brave-browser.desktop" <<'EOF'
+[Desktop Entry]
+Version=1.0
+Name=Brave Web Browser
+Comment=Access the Internet with akr-dots GPU acceleration & Wayland flags
+GenericName=Web Browser
+Exec=brave-browser-stable %U
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Icon=brave-browser
+Categories=Network;WebBrowser;
+MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;
+StartupNotify=true
+Actions=new-window;new-private-window;
+
+[Desktop Action new-window]
+Name=New Window
+Exec=brave-browser-stable
+
+[Desktop Action new-private-window]
+Name=New Incognito Window
+Exec=brave-browser-stable --incognito
+EOF
+    cp -f "$app_dir/brave-browser.desktop" "$app_dir/com.brave.Browser.desktop" 2>/dev/null || true
+  fi
+
+  if command -v google-chrome-stable >/dev/null 2>&1 || [ -x /opt/google/chrome/chrome ]; then
+    cat > "$app_dir/google-chrome.desktop" <<'EOF'
+[Desktop Entry]
+Version=1.0
+Name=Google Chrome
+Comment=Access the Internet with akr-dots GPU acceleration & Wayland flags
+GenericName=Web Browser
+Exec=google-chrome-stable %U
+Terminal=false
+Type=Application
+Icon=google-chrome
+Categories=Network;WebBrowser;
+MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;
+StartupNotify=true
+Actions=new-window;new-private-window;
+
+[Desktop Action new-window]
+Name=New Window
+Exec=google-chrome-stable
+
+[Desktop Action new-private-window]
+Name=New Incognito Window
+Exec=google-chrome-stable --incognito
+EOF
+  fi
+
+  if command -v chromium >/dev/null 2>&1 || command -v chromium-browser >/dev/null 2>&1; then
+    cat > "$app_dir/chromium.desktop" <<'EOF'
+[Desktop Entry]
+Version=1.0
+Name=Chromium Web Browser
+Comment=Access the Internet with akr-dots GPU acceleration & Wayland flags
+GenericName=Web Browser
+Exec=chromium %U
+Terminal=false
+Type=Application
+Icon=chromium
+Categories=Network;WebBrowser;
+MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;
+StartupNotify=true
+Actions=new-window;new-private-window;
+
+[Desktop Action new-window]
+Name=New Window
+Exec=chromium
+
+[Desktop Action new-private-window]
+Name=New Incognito Window
+Exec=chromium --incognito
+EOF
+  fi
+
+  update-desktop-database "$app_dir" 2>/dev/null || true
 }
 
 # Sync repo-managed quickshell files into an already-installed quickshell

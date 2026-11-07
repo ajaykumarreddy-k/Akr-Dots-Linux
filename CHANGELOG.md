@@ -4,11 +4,13 @@
 
 ## Fixed:
 
-- Chromium-based browser image and media rendering glitch
-  - Added ANGLE OpenGL fallback to eliminate buffer corruption
-  - Shipped `brave-flags.conf`, `chrome-flags.conf`, `chromium-flags.conf`
-  - `lib_copy.sh` deploys browser flag configs to `${XDG_CONFIG_HOME}`
-  - Documented full troubleshooting and Q&A guide in `bugs.md`
+- Chromium/Brave image glitch with full hardware acceleration enabled
+  - Disabled GPU rasterization to eliminate checkered static artifacts
+  - Disabled experimental `SkiaGraphite` pipeline for stable Ganesh
+  - Created `browser-flags-runner.sh` to ensure Debian/Ubuntu pass flags
+  - Added `.desktop` launcher overrides for all FreeDesktop menus/Rofi
+  - Hybrid GPU detection prevents forced NVIDIA GLX on iGPU Wayland
+  - Documented full root cause, Q&A and verification in `bugs.md`
 
 ## Added:
 

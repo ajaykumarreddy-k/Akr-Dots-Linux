@@ -37,14 +37,21 @@ hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("XCURSOR_THEME", "Bibata-Modern-Ice")
 hl.env("XCURSOR_SIZE", "24")
 
--- NVIDIA specific environment variables (enabled by detector when Nvidia GPU present)
-hl.env("LIBVA_DRIVER_NAME", "nvidia")
-hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
-hl.env("NVD_BACKEND", "direct")
-hl.env("GSK_RENDERER", "ngl")
+-- User binaries directory (~/.local/bin) for scripts and wrappers
+local homeDir = os.getenv("HOME") or ""
+local currentPath = os.getenv("PATH") or ""
+if homeDir ~= "" and not currentPath:find(homeDir .. "/.local/bin", 1, true) then
+  hl.env("PATH", homeDir .. "/.local/bin:" .. currentPath)
+end
+
+-- NVIDIA specific environment variables (enabled by detector on dedicated Nvidia desktop systems)
+-- hl.env("LIBVA_DRIVER_NAME", "nvidia")
+-- hl.env("__GLX_VENDOR_LIBRARY_NAME", "nvidia")
+-- hl.env("NVD_BACKEND", "direct")
+-- hl.env("GSK_RENDERER", "ngl")
 
 -- VM / Software rendering fallback (enabled by detector in VM)
-hl.env("WLR_RENDERER_ALLOW_SOFTWARE", "1")
+-- hl.env("WLR_RENDERER_ALLOW_SOFTWARE", "1")
 
 -- Fix for missing mime-info database error
 local current_data_dirs = os.getenv("XDG_DATA_DIRS") or ""
