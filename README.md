@@ -23,6 +23,7 @@
 ---
 
 <div align="center">
+  <a href="#-ubuntu-support--quick-install"><kbd>&emsp;<br>&emsp;🐧 <b>Ubuntu Support</b>&emsp;<br>&emsp;</kbd></a>&ensp;&ensp;
   <a href="#-installationupdate-instructions"><kbd>&emsp;<br>&emsp;Installation&emsp;<br>&emsp;</kbd></a>&ensp;&ensp;
   <a href="features.md"><kbd>&emsp;<br>&emsp;Features&emsp;<br>&emsp;</kbd></a>&ensp;&ensp;
   <a href="bugs.md"><kbd>&emsp;<br>&emsp;Bugs & Fixes&emsp;<br>&emsp;</kbd></a>&ensp;&ensp;
@@ -33,12 +34,41 @@
 
 ---
 
-### 🪧 Attention
+### 🐧 Ubuntu Support & Quick Install
 
-- This repository contains pre-configured Hyprland dotfiles and configurations.
-- Packages are not installed by `copy.sh` alone — Hyprland and associated desktop packages (waybar, rofi, swww/swaybg, etc.) must be installed on your system.
+If you are on **Ubuntu**, copy and paste this command into your terminal. It checks if Hyprland is already present — if found, it skips package installation and applies the dotfiles directly; if missing, it automatically installs all required packages and dependencies:
 
-### 💥 Installation / Setup Instructions
+```bash
+curl -sL https://raw.githubusercontent.com/ajaykumarreddy-k/Akr-Dots-Linux/main/install-ubuntu.sh | bash
+```
+
+Or clone and run locally:
+```bash
+git clone https://github.com/ajaykumarreddy-k/Akr-Dots-Linux.git && cd Akr-Dots-Linux
+chmod +x install-ubuntu.sh
+./install-ubuntu.sh
+```
+
+---
+
+### 🌐 Universal Multi-Distro Quick Install (All Distros)
+
+For **Arch Linux, Debian, Fedora, openSUSE, and NixOS**, use the universal installer that auto-detects your distribution's package manager:
+
+```bash
+curl -sL https://raw.githubusercontent.com/ajaykumarreddy-k/Akr-Dots-Linux/main/install.sh | bash
+```
+
+Or clone and run locally:
+```bash
+git clone https://github.com/ajaykumarreddy-k/Akr-Dots-Linux.git && cd Akr-Dots-Linux
+chmod +x install.sh
+./install.sh
+```
+
+---
+
+### 🪧 Manual Installation / Setup Instructions
 
 > [!NOTE]
 > The auto-copy script `copy.sh` creates backups of your existing configs before modifying anything.

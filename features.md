@@ -61,6 +61,19 @@ akr-dots includes an interactive Wallpaper Selector (**`SUPER` + `W`**) with dyn
 
 ---
 
+## 🚀 Automated Installers (Ubuntu & Universal Multi-Distro)
+
+- **Ubuntu Quick Installer (`install-ubuntu.sh`)**:
+  - One-line copy-paste automated installer tailored for Ubuntu.
+  - Detects if `Hyprland` is already installed: skips package compiling and applies dotfiles instantly if found; automatically runs `Distro-Hyprland.sh` if missing.
+  - Automatically installs prerequisite packages (`git`, `curl` via `apt`).
+- **Universal Multi-Distro Installer (`install.sh`)**:
+  - Automatically detects the system package manager (`apt`, `pacman`, `dnf`, `zypper`).
+  - Supports Ubuntu, Debian, Arch Linux, Fedora, openSUSE, and NixOS.
+  - Checks for existing Hyprland installations before deciding whether to trigger full package build or config deployment.
+
+---
+
 ## 🚀 Hyprland Lua VM & User Config Architecture
 
 - **Lua-Powered Configuration**: Fast, type-safe, and modular Hyprland configuration system.

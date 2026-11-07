@@ -19,6 +19,11 @@
 
 ## Added:
 
+- Ubuntu and Universal automated quick install scripts
+  - Added `install-ubuntu.sh` with automatic Hyprland presence detection
+  - Added `install.sh` supporting Ubuntu, Debian, Arch, Fedora, openSUSE
+  - Skips package compilation if Hyprland is already installed on system
+  - Pinned copy-paste install commands and Ubuntu button in `README.md`
 - Dedicated `Print` keybind for GNOME interactive screenshot UI
   - Bound bare `Print` and `F6` to `ScreenShot.sh --interactive`
   - Launches `gnome-screenshot -i` with automatic Swappy fallback
