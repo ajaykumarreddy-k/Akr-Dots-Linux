@@ -179,8 +179,8 @@ if not content.strip():
     content = header
 
 pattern = re.compile(
-    r'hl\.workspace_rule\(\s*\{([^}]+)\}\s*\)',
-    re.MULTILINE | re.DOTALL
+    r'(?m)^(?![ \t]*--)[ \t]*hl\.workspace_rule\(\s*\{([^}]+)\}\s*\)',
+    re.DOTALL
 )
 
 def parse_rule_table(table_body):

@@ -201,7 +201,7 @@ set_layout() {
   if [[ "$actual" == "$target" ]]; then
     persist_current_workspace_layout "$target"
     if [[ "$target" == "scrolling" ]]; then
-      hyprctl dispatch 'hl.dsp.layout("colresize 0.5")' >/dev/null 2>&1 || true
+      hyprctl dispatch 'hl.dsp.layout("colresize 0.85")' >/dev/null 2>&1 || true
     fi
     hypr_emit_event "kool:layout"
     if [[ "$quiet_mode" -eq 0 ]]; then

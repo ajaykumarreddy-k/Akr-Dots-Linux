@@ -27,7 +27,7 @@ local SAME_SIZE_GAP = 16
 local MIN_USABLE_W, MIN_USABLE_H = 320, 240
 local NOTIFY_TIMEOUT_MS = 2000
 
-local COLUMN_WIDTH_PRESETS = { 0.25, 0.33, 0.5, 0.66, 0.75, 1.0 }
+local COLUMN_WIDTH_PRESETS = { 0.25, 0.33, 0.5, 0.66, 0.75, 0.85, 1.0 }
 
 -- ---------------------------------------------------------------------------
 -- small helpers
