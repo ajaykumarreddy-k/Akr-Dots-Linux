@@ -10,6 +10,15 @@
   - `lib_copy.sh` deploys browser flag configs to `${XDG_CONFIG_HOME}`
   - Documented full troubleshooting and Q&A guide in `bugs.md`
 
+## Added:
+
+- Custom wallpaper addition button in wallpaper selector
+  - Added `+ Add Custom Wallpaper` tile to `WallpaperSelect.sh` menu
+  - Opens GUI file picker using `zenity`, `yad`, or `kdialog`
+  - Automatically imports chosen wallpaper to `~/Pictures/wallpapers`
+  - Immediately applies image or video wallpaper with Wallust theming
+  - Documented in `features.md` and linked in `README.md`
+
 ---
 
 ## v2.3.28.2

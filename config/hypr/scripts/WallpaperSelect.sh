@@ -137,6 +137,14 @@ rofi_command="rofi -i -show -dmenu -config $rofi_theme -theme-str $rofi_override
 menu() {
   IFS=$'\n' sorted_options=($(sort <<<"${PICS[*]}"))
 
+  local add_wall_icon="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/rofi/add_wallpaper.png"
+  if [[ ! -f "$add_wall_icon" ]]; then
+    add_wall_icon="${SCRIPTSDIR}/../rofi/add_wallpaper.png"
+  fi
+  if [[ ! -f "$add_wall_icon" ]]; then
+    add_wall_icon="${iDIRi}/picture.png"
+  fi
+  printf "%s\x00icon\x1f%s\n" "+ Add Custom Wallpaper" "$add_wall_icon"
   printf "%s\x00icon\x1f%s\n" "Random: $RANDOM_PIC_NAME" "$RANDOM_PIC"
   if [[ -n "$CURRENT_MON_PIC_PATH" && -f "$CURRENT_MON_PIC_PATH" ]]; then
     printf "%s\x00icon\x1f%s\n" "Current: $CURRENT_MON_PIC_NAME" "$CURRENT_MON_PIC_PATH"
@@ -216,6 +224,50 @@ apply_video_wallpaper() {
   mpvpaper "$focused_monitor" -o "load-scripts=no no-audio --loop" "$video_path" &
 }
 
+# Add custom wallpaper via file chooser dialog
+add_custom_wallpaper() {
+  local selected=""
+  if command -v zenity &>/dev/null; then
+    selected=$(zenity --file-selection \
+      --title="Select Custom Wallpaper" \
+      --file-filter="Wallpapers (Images & Videos) | *.jpg *.jpeg *.png *.gif *.bmp *.tiff *.webp *.mp4 *.mkv *.mov *.webm *.MP4 *.MKV *.MOV *.WEBM" \
+      --file-filter="All Files | *" 2>/dev/null)
+  elif command -v yad &>/dev/null; then
+    selected=$(yad --file \
+      --title="Select Custom Wallpaper" \
+      --file-filter="Wallpapers | *.jpg *.jpeg *.png *.gif *.bmp *.tiff *.webp *.mp4 *.mkv *.mov *.webm *.MP4 *.MKV *.MOV *.WEBM" 2>/dev/null)
+  elif command -v kdialog &>/dev/null; then
+    selected=$(kdialog --getopenfilename "$HOME" "Wallpapers (*.jpg *.jpeg *.png *.gif *.bmp *.tiff *.webp *.mp4 *.mkv *.mov *.webm)" 2>/dev/null)
+  fi
+
+  if [[ -z "$selected" ]]; then
+    echo "Wallpaper selection cancelled."
+    return 0
+  fi
+
+  if [[ ! -f "$selected" ]]; then
+    notify-send -i "$iDIR/error.png" "Error" "Selected file does not exist: $selected"
+    return 1
+  fi
+
+  mkdir -p "$wallDIR"
+  local filename
+  filename="$(basename "$selected")"
+  local dest_path="$wallDIR/$filename"
+
+  if [[ "$selected" != "$dest_path" ]]; then
+    cp -f "$selected" "$dest_path"
+  fi
+
+  if [[ "$dest_path" =~ \.(mp4|mkv|mov|webm|MP4|MKV|MOV|WEBM)$ ]]; then
+    apply_video_wallpaper "$dest_path"
+  else
+    apply_image_wallpaper "$dest_path"
+  fi
+
+  notify-send -i "${dest_path}" "Wallpaper Added" "Added $filename to wallpapers and applied"
+}
+
 # Main function
 main() {
   "${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts/RofiFocusedWallpaperLink.sh" >/dev/null 2>&1 || true
@@ -223,6 +275,12 @@ main() {
   choice=$(echo "$choice" | xargs)
   RANDOM_PIC_NAME=$(echo "$RANDOM_PIC_NAME" | xargs)
   raw_choice="$choice"
+
+  if [[ "$raw_choice" == "+ Add Custom Wallpaper"* || "$choice" == "+ Add Custom Wallpaper"* ]]; then
+    add_custom_wallpaper
+    exit 0
+  fi
+
   choice="${choice#Random: }"
   choice="${choice#Current: }"
 

@@ -24,6 +24,8 @@
 
 <div align="center">
   <a href="#-installationupdate-instructions"><kbd>&emsp;<br>&emsp;Installation&emsp;<br>&emsp;</kbd></a>&ensp;&ensp;
+  <a href="features.md"><kbd>&emsp;<br>&emsp;Features&emsp;<br>&emsp;</kbd></a>&ensp;&ensp;
+  <a href="bugs.md"><kbd>&emsp;<br>&emsp;Bugs & Fixes&emsp;<br>&emsp;</kbd></a>&ensp;&ensp;
   <a href="#-multi-monitor-display-layouts"><kbd>&emsp;<br>&emsp;Display Layouts&emsp;<br>&emsp;</kbd></a>&ensp;&ensp;
   <a href="#-keybinds"><kbd>&emsp;<br>&emsp;Keybinds&emsp;<br>&emsp;</kbd></a>&ensp;&ensp;
   <a href="CHANGELOG.md"><kbd>&emsp;<br>&emsp;Changelog&emsp;<br>&emsp;</kbd></a>
@@ -86,6 +88,18 @@ chmod +x copy.sh
 
 - Press **`SUPER` + `H`** at any time to open the Quick Cheat Sheet / KeyHints menu.
 - See [`docs/Keybinds.md`](./docs/Keybinds.md) for the complete list of default shortcuts.
+
+### 📚 Documentation & Guides
+
+Comprehensive guides and tracking documents for this codebase:
+
+| Document | Description |
+| :--- | :--- |
+| [**`features.md`**](./features.md) | Full features list, including the new **`+` Custom Wallpaper Importer**, theming engine, and enhancements |
+| [**`bugs.md`**](./bugs.md) | Known bugs, causes, and step-by-step Q&A solutions (e.g., BUG-01: Chromium image glitching on Wayland) |
+| [**`CHANGELOG.md`**](./CHANGELOG.md) | Chronological release and commit history of all updates and fixes |
+| [**`README-display-layouts.md`**](./README-display-layouts.md) | Architecture and user guide for hardware-identified multi-monitor display layouts |
+| [**`docs/Keybinds.md`**](./docs/Keybinds.md) | Complete reference guide for all default keybindings and shortcuts |
 
 ### 📄 License
 
