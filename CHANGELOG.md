@@ -4,13 +4,18 @@
 
 ## Fixed:
 
-- Chromium/Brave image glitch with full hardware acceleration enabled
-  - Forced X11 Ozone backend to eliminate hover damage and overlay tearing
-  - Enabled GPU rasterization with full hardware acceleration
-  - Created `browser-flags-runner.sh` to ensure Debian/Ubuntu pass flags
-  - Added `.desktop` launcher overrides for all FreeDesktop menus/Rofi
+- BUG-02: Hover card overlay and tearing in Chromium/Brave browsers
+  - Set `--ozone-platform=x11` as default display backend for browsers
+  - Enabled `--enable-gpu-rasterization` for full hardware acceleration
+  - Eliminates Wayland damage rectangle desync and stale card overlays
+  - Default flags automatically route through `browser-flags-runner.sh`
+  - Deployed absolute `.desktop` overrides for all FreeDesktop menus/Rofi
+  - Ensured fallback defaults in runner if flags configuration is missing
+  - Added comprehensive root cause, reason, and fix to `bugs.md`
+- BUG-01: Chromium image and media rendering corruption on hybrid GPUs
   - Hybrid GPU detection prevents forced NVIDIA GLX on iGPU Wayland
-  - Documented full root cause, Q&A and verification in `bugs.md`
+  - Shipped `brave-flags.conf`, `chrome-flags.conf`, `chromium-flags.conf`
+  - Documented troubleshooting and Q&A in `bugs.md`
 
 ## Added:
 

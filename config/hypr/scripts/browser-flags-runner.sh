@@ -63,6 +63,11 @@ if [ -n "$flags_file" ] && [ -f "$flags_file" ]; then
   done < "$flags_file"
 fi
 
+# Fallback defaults if flags file is empty or missing: ensure X11 and GPU rasterization
+if [ "${#flags[@]}" -eq 0 ]; then
+  flags=("--ozone-platform=x11" "--enable-gpu-rasterization" "--disable-features=UseChromeOSDirectVideoDecoder")
+fi
+
 real_bin=""
 my_path="$(readlink -f "$0" 2>/dev/null || echo "$0")"
 for candidate in "${search_bins[@]}"; do
