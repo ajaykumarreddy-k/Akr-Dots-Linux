@@ -123,7 +123,7 @@
     {
       "type": "command",
       "key": "             akr-dots Ver ",
-      "text": "echo v0.6",
+      "text": "echo v0.7",
       "keyColor": "magenta",
     },
     {

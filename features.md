@@ -19,12 +19,17 @@ akr-dots includes an interactive Wallpaper Selector (**`SUPER` + `W`**) with dyn
 
 ---
 
-## 🌐 Chromium & Browser Wayland Optimization
+## 🌐 Chromium & Browser Hardware Acceleration & Wayland Optimization
 
-- **Zero Glitch Guarantee**: Pre-configured browser flags for **Brave**, **Google Chrome**, and **Chromium** (`brave-flags.conf`, `chrome-flags.conf`, `chromium-flags.conf`).
-- **ANGLE OpenGL Fallback**: Eliminates texture corruption, black rectangular scanlines, and image glitching on Wayland (particularly on Intel/NVIDIA hybrid laptops).
-- **Smooth Wayland Window Decorations**: Seamless window management and fractional scaling integration.
-- **Troubleshooting Reference**: Documented solutions in [`bugs.md`](./bugs.md) for quick diagnosis and browser flag tuning.
+- **Zero Glitch Guarantee (BUG-01 & BUG-02 Fixes)**: Pre-configured browser flags for **Brave**, **Google Chrome**, and **Chromium** (`brave-flags.conf`, `chrome-flags.conf`, `chromium-flags.conf`).
+- **Definitive Fix for Hover Slicing & Overlays**: Default runner automatically passes `--ozone-platform=x11 --enable-gpu-rasterization`.
+  - Eliminates Wayland partial damage rectangle desynchronization when hovering over CSS transform cards (`scale(1.02)` on `styles.refero.design`).
+  - Completely stops image corruption, checkered static, and cards slicing into adjacent tiles.
+  - Keeps 100% full hardware GPU acceleration (compositing, WebGL, 3D Canvas, video decode) at 144Hz with zero lag.
+- **Universal Browser Flags Runner (`browser-flags-runner.sh`)**:
+  - Automatically loads and applies flags on Debian/Ubuntu/Arch.
+  - Desktop entries in `~/.local/share/applications/` route GUI launches through the runner with hardcoded fallbacks.
+- **Troubleshooting Reference**: Comprehensive root causes and documentation in [`bugs.md`](./bugs.md).
 
 ---
 
@@ -64,13 +69,22 @@ akr-dots includes an interactive Wallpaper Selector (**`SUPER` + `W`**) with dyn
 ## 🚀 Automated Installers (Ubuntu & Universal Multi-Distro)
 
 - **Ubuntu Quick Installer (`install-ubuntu.sh`)**:
-  - One-line copy-paste automated installer tailored for Ubuntu.
-  - Detects if `Hyprland` is already installed: skips package compiling and applies dotfiles instantly if found; automatically runs `Distro-Hyprland.sh` if missing.
+  - One-line copy-paste automated installer tailored for Ubuntu:
+    ```bash
+    curl -sL https://raw.githubusercontent.com/ajaykumarreddy-k/Akr-Dots-Linux/main/install-ubuntu.sh | bash
+    ```
+  - **Smart Hyprland Check**:
+    - **Hyprland Found**: Skips package compiling and immediately deploys `akr-dots` dotfiles via `copy.sh`.
+    - **Hyprland Missing**: Automatically runs `Distro-Hyprland.sh` to install Hyprland and all desktop dependencies (`waybar`, `rofi-wayland`, `swww`, `swaync`, `wallust`, `kitty`, audio, fonts, polkit), then deploys the dotfiles.
   - Automatically installs prerequisite packages (`git`, `curl` via `apt`).
 - **Universal Multi-Distro Installer (`install.sh`)**:
-  - Automatically detects the system package manager (`apt`, `pacman`, `dnf`, `zypper`).
+  - One-line copy-paste universal installer for any Linux distribution:
+    ```bash
+    curl -sL https://raw.githubusercontent.com/ajaykumarreddy-k/Akr-Dots-Linux/main/install.sh | bash
+    ```
+  - Automatically detects the package manager (`apt`, `pacman`, `dnf`, `zypper`).
   - Supports Ubuntu, Debian, Arch Linux, Fedora, openSUSE, and NixOS.
-  - Checks for existing Hyprland installations before deciding whether to trigger full package build or config deployment.
+  - Automatically checks for existing Hyprland installations before deciding whether to run full package setup or direct dotfiles deployment.
 
 ---
 

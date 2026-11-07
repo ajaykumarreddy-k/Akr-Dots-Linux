@@ -30,7 +30,7 @@
             "type": "command",
             "key": " ",
             "keyColor": "blue",
-            "text": "echo akr-dots Version: 0.6",
+            "text": "echo akr-dots Version: 0.7",
         },
         {
             "type": "wm",

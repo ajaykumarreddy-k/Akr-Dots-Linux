@@ -1,6 +1,6 @@
 # Changelog — akr-dots
 
-## v0.6
+## v0.7
 
 ## Fixed:
 
