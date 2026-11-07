@@ -33,6 +33,24 @@ akr-dots includes an interactive Wallpaper Selector (**`SUPER` + `W`**) with dyn
 
 ---
 
+## 📜 Scrolling Tape Layout & Dynamic Column Presets (`SUPER` + `ALT` + `3`)
+
+- **PaperWM / Niri-Style Infinite Tape**: In addition to Dwindle and Master layouts, `akr-dots` features a native scrolling tape layout where columns flow horizontally across an infinite canvas.
+- **85% Side Placement (`0.85` Column Width)**:
+  - Active column defaults to **85%** of screen width, providing ample room for coding, browsing, or terminal work.
+  - Leaves **15%** visible on the side for the next column on the tape, giving an intuitive visual overview of adjacent windows.
+- **Disabled Single-Column Zooming**:
+  - `fullscreen_on_one_column = false` prevents single windows from unexpectedly ballooning into fullscreen monocle view.
+- **Dynamic Width Cycling (`SUPER` + `R`)**:
+  - Quickly cycle through column width presets (`0.25`, `0.33`, `0.50`, `0.66`, `0.75`, `0.85`, `1.0`) on the active window.
+- **Tape Navigation Keybinds**:
+  - **`SUPER` + `H` / `L`** or **`SUPER` + `Left` / `Right`**: Focus left / right columns.
+  - **`SUPER` + `SHIFT` + `period` / `comma`**: Move column right / left.
+  - **`SUPER` + `ALT` + `period` / `comma`**: Swap column right / left on tape.
+- **Full Details & Fixes**: Documented under **BUG-03** in [`bugs.md`](./bugs.md).
+
+---
+
 ## 🖥️ Multi-Monitor Display Profiles
 
 - **Hardware Identity Matching**: Remembers your monitor arrangement by hardware EDID, not fragile port names (`DP-1`, `HDMI-A-1`).

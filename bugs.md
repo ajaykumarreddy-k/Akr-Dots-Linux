@@ -10,6 +10,7 @@ This document tracks known bugs, graphical glitches, compatibility issues, and t
 | :--- | :--- | :--- | :--- |
 | **BUG-01** | [Images and media glitching when hardware acceleration is enabled](#bug-01-images-and-media-glitching-when-hardware-acceleration-is-enabled-chromium-brave-chrome) | Chromium / Brave / Wayland / Hybrid GPU | **Fixed & Documented** |
 | **BUG-02** | [Hover card overlay, tearing & image corruption fixed with `/opt/brave.com/brave/brave --ozone-platform=x11 --enable-gpu-rasterization`](#bug-02-hover-card-overlay-tearing--image-corruption-fixed-with-optbravecombravebrave---ozone-platformx11---enable-gpu-rasterization) | Brave / Chromium / Wayland Ozone / XWayland | **Fixed & Auto-Applied** |
+| **BUG-03** | [Scrolling layout over-zooming & tape width default (SUPER + ALT + 3)](#bug-03-scrolling-layout-over-zooming--tape-width-default-super--alt--3) | Hyprland Scrolling / ChangeLayout / PersistWorkspaceLayout | **Fixed & Auto-Applied** |
 
 ---
 
@@ -137,3 +138,69 @@ To verify that the browser is running with the fix:
    - **WebGL / WebGL 2:** `Hardware accelerated`
 3. Test [`https://styles.refero.design`](https://styles.refero.design):
    - Hovering over cards triggers clean scale transitions with **zero overlapping, zero tearing, zero checkered static, and zero lag**.
+
+---
+
+## BUG-03: Scrolling Layout Over-Zooming & Tape Width Default (`SUPER` + `ALT` + `3`)
+
+### Overview & Symptoms
+When activating the **Scrolling layout** (via keyboard shortcut **`SUPER` + `ALT` + `3`** or the Rofi layout switcher menu):
+- Windows would blow up to 100% full screen width (`1906px`), mimicking an unwanted monocle mode.
+- Users could not see an adjacent window peeking on the scrolling tape, making the workspace feel like it was "over-zoomed" or stuck.
+- When cycling or switching layouts, Hyprland returned errors like `Unknown dwindle layoutmsg: colresize` because layout dispatchers were mismatched against the active workspace layout.
+- Additionally, switching layout rules on workspace 1 was not being saved permanently to `workspaces.lua`.
+
+---
+
+### Root Causes
+1. **Single-Column Fullscreen Mode Enabled (`fullscreen_on_one_column = true`)**:
+   - In `settings.lua`, `fullscreen_on_one_column` was set to `true`.
+   - In Hyprland's scrolling layout, whenever a workspace contains only one column (or during initial window creation), it automatically maximizes the window across 100% of the display, causing aggressive over-zooming.
+2. **Suboptimal Column Width**:
+   - The default column width did not provide the ideal 85% width (`0.85`) with a 15% side-peek for neighboring columns on the tape.
+3. **Comment Regex False-Positive in `PersistWorkspaceLayout.sh`**:
+   - The persistence script's regex `r'hl\.workspace_rule\(\s*\{([^}]+)\}\s*\)'` matched the commented-out template header `-- hl.workspace_rule({ workspace = "1", ... })` in `UserConfigs/workspaces.lua`.
+   - The script thought workspace 1 was already present, set `updated = True`, and skipped writing the real workspace 1 rule.
+4. **Dispatcher Layout Mismatch**:
+   - `ChangeLayout.sh` registered workspace rules without updating Hyprland's `general:layout`, causing layout message commands (`colresize`, `layoutmsg focus r`) to route to Dwindle instead of Scrolling.
+
+---
+
+### The Fix: Balanced `0.85` Column Width & Clean Tape Navigation
+
+1. **Configured `column_width = 0.85` with Side Tape Peek**:
+   - In `config/hypr/lua/settings.lua`:
+     ```lua
+     hl.config({
+       scrolling = {
+         column_width = 0.85,
+         fullscreen_on_one_column = false,
+         direction = "right",
+         follow_focus = true,
+       },
+     })
+     ```
+   - Active windows occupy **85%** of the display (`1612px` on 1080p) aligned cleanly to the side, leaving **15%** for the adjacent column peeking on the screen edge.
+   - Disabled single-column fullscreen blowup (`fullscreen_on_one_column = false`).
+
+2. **Added `0.85` to Window Action Presets (`window_actions.lua`)**:
+   - Updated `COLUMN_WIDTH_PRESETS` to `{ 0.25, 0.33, 0.5, 0.66, 0.75, 0.85, 1.0 }`.
+   - Pressing **`SUPER` + `R`** allows cycling column widths dynamically through all presets including 85%.
+
+3. **Synchronized Layout Engine (`ChangeLayout.sh`)**:
+   - `ChangeLayout.sh` updates both the per-workspace rule and `general:layout = target`, ensuring dispatchers handle column navigation (`focus r/l`, `move +col/-col`) without errors.
+   - Automatically executes `colresize 0.85` when switching to scrolling layout.
+
+4. **Regex Fix in `PersistWorkspaceLayout.sh`**:
+   - Updated the rule parser to ignore commented lines (`(?m)^(?![ \t]*--)[ \t]*hl\.workspace_rule`), ensuring layout choices for workspace 1 (and all workspaces) persist correctly across reboots.
+
+---
+
+### Verification
+1. Press **`SUPER` + `ALT` + `3`** to switch to Scrolling layout.
+2. Verify active workspace and window width:
+   ```bash
+   hyprctl -j clients | jq '.[] | select(.workspace.id == 1) | {title, size, at}'
+   ```
+   Window size reflects `1612` (85%) with clean side placement and zero over-zooming.
+3. Cycle column widths with **`SUPER` + `R`** or navigate columns with **`SUPER` + `L` / `SUPER` + `H`** (or **`SUPER` + `Left` / `Right`**).

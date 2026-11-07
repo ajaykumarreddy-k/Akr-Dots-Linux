@@ -4,7 +4,7 @@
 
 ## Fixed:
 
-- Scrolling layout over-zooming on `SUPER+ALT+3`
+- BUG-03: Scrolling layout over-zooming on `SUPER+ALT+3`
   - Disabled `fullscreen_on_one_column` in `settings.lua`
   - Defaulted `column_width` to 0.85 with side tape peek
   - Added 0.85 column width preset to `window_actions.lua`
