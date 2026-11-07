@@ -118,7 +118,7 @@
         {
             "type": "command",
             "key": "    akr-dots",
-            "text": "echo v${DOTS_VERSION}"
+      "text": "echo v0.6",
         },
         {
             "type": "display",

@@ -26,7 +26,7 @@
     {
     "type": "command",
     "key": "│ ├",
-    "text": "echo akr-dots Version: ${DOTS_VERSION}",
+            "text": "echo akr-dots Version: 0.6",
     "keyColor": "yellow"
     },
     {

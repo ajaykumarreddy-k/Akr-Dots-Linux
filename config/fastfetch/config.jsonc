@@ -123,7 +123,7 @@
     {
       "type": "command",
       "key": "             akr-dots Ver ",
-      "text": "echo v${DOTS_VERSION}",
+      "text": "echo v0.6",
       "keyColor": "magenta",
     },
     {

@@ -30,7 +30,7 @@
         {
             "keyColor": "blue",
             "key": " ",
-            "text": "echo akr-dots: v${DOTS_VERSION}",
+      "text": "echo v0.6",
 	    "type": "command"
         },
         {
