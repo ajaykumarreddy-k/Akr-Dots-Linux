@@ -95,6 +95,7 @@ Comprehensive guides and tracking documents for this codebase:
 
 | Document | Description |
 | :--- | :--- |
+| [**`RELEASE_NOTES.md`**](./RELEASE_NOTES.md) | Official release notes and installation details for **`v0.6`** |
 | [**`features.md`**](./features.md) | Full features list, including the new **`+` Custom Wallpaper Importer**, theming engine, and enhancements |
 | [**`bugs.md`**](./bugs.md) | Known bugs, causes, and step-by-step Q&A solutions (e.g., BUG-01: Chromium image glitching on Wayland) |
 | [**`CHANGELOG.md`**](./CHANGELOG.md) | Chronological release and commit history of all updates and fixes |
