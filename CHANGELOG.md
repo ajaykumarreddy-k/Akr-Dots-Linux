@@ -5,8 +5,8 @@
 ## Fixed:
 
 - Chromium/Brave image glitch with full hardware acceleration enabled
-  - Disabled GPU rasterization to eliminate checkered static artifacts
-  - Disabled experimental `SkiaGraphite` pipeline for stable Ganesh
+  - Forced X11 Ozone backend to eliminate hover damage and overlay tearing
+  - Enabled GPU rasterization with full hardware acceleration
   - Created `browser-flags-runner.sh` to ensure Debian/Ubuntu pass flags
   - Added `.desktop` launcher overrides for all FreeDesktop menus/Rofi
   - Hybrid GPU detection prevents forced NVIDIA GLX on iGPU Wayland

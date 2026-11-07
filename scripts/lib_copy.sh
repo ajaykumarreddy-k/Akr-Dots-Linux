@@ -442,13 +442,13 @@ install_browser_flags_and_wrappers() {
 
   # Deploy desktop entries so FreeDesktop launchers (Rofi, drun, menus) use flags wrapper
   if command -v brave-browser-stable >/dev/null 2>&1 || [ -x /opt/brave.com/brave/brave ]; then
-    cat > "$app_dir/brave-browser.desktop" <<'EOF'
+    cat > "$app_dir/brave-browser.desktop" <<EOF
 [Desktop Entry]
 Version=1.0
 Name=Brave Web Browser
 Comment=Access the Internet with akr-dots GPU acceleration & Wayland flags
 GenericName=Web Browser
-Exec=brave-browser-stable %U
+Exec=$runner brave %U
 Terminal=false
 X-MultipleArgs=false
 Type=Application
@@ -460,23 +460,23 @@ Actions=new-window;new-private-window;
 
 [Desktop Action new-window]
 Name=New Window
-Exec=brave-browser-stable
+Exec=$runner brave
 
 [Desktop Action new-private-window]
 Name=New Incognito Window
-Exec=brave-browser-stable --incognito
+Exec=$runner brave --incognito
 EOF
     cp -f "$app_dir/brave-browser.desktop" "$app_dir/com.brave.Browser.desktop" 2>/dev/null || true
   fi
 
   if command -v google-chrome-stable >/dev/null 2>&1 || [ -x /opt/google/chrome/chrome ]; then
-    cat > "$app_dir/google-chrome.desktop" <<'EOF'
+    cat > "$app_dir/google-chrome.desktop" <<EOF
 [Desktop Entry]
 Version=1.0
 Name=Google Chrome
 Comment=Access the Internet with akr-dots GPU acceleration & Wayland flags
 GenericName=Web Browser
-Exec=google-chrome-stable %U
+Exec=$runner google-chrome %U
 Terminal=false
 Type=Application
 Icon=google-chrome
@@ -487,22 +487,22 @@ Actions=new-window;new-private-window;
 
 [Desktop Action new-window]
 Name=New Window
-Exec=google-chrome-stable
+Exec=$runner google-chrome
 
 [Desktop Action new-private-window]
 Name=New Incognito Window
-Exec=google-chrome-stable --incognito
+Exec=$runner google-chrome --incognito
 EOF
   fi
 
   if command -v chromium >/dev/null 2>&1 || command -v chromium-browser >/dev/null 2>&1; then
-    cat > "$app_dir/chromium.desktop" <<'EOF'
+    cat > "$app_dir/chromium.desktop" <<EOF
 [Desktop Entry]
 Version=1.0
 Name=Chromium Web Browser
 Comment=Access the Internet with akr-dots GPU acceleration & Wayland flags
 GenericName=Web Browser
-Exec=chromium %U
+Exec=$runner chromium %U
 Terminal=false
 Type=Application
 Icon=chromium
@@ -513,11 +513,11 @@ Actions=new-window;new-private-window;
 
 [Desktop Action new-window]
 Name=New Window
-Exec=chromium
+Exec=$runner chromium
 
 [Desktop Action new-private-window]
 Name=New Incognito Window
-Exec=chromium --incognito
+Exec=$runner chromium --incognito
 EOF
   fi
 
