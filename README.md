@@ -17,8 +17,8 @@
 </p>
 
 > [!NOTE]
-> **Main Source / Attribution**: This codebase is derived from and based on the upstream [`LinuxBeginnings/Hyprland-Dots`](https://github.com/LinuxBeginnings/Hyprland-Dots) (`dots-main`).
-> It is independently maintained, customized, and bugfixed by [ajaykumarreddy-k](https://github.com/ajaykumarreddy-k).
+> **Root Repository & Upstream Base**: This codebase originates from the root repository [https://github.com/LinuxBeginnings/Hyprland-Dots](https://github.com/LinuxBeginnings/Hyprland-Dots).
+> **Independent Custom Version**: **akr-dots** is a standalone, custom-fixed version maintained on its own by [ajaykumarreddy-k](https://github.com/ajaykumarreddy-k). It features custom bug fixes, personal enhancements, and independent ongoing development.
 
 ---
 
@@ -101,7 +101,9 @@ Comprehensive guides and tracking documents for this codebase:
 | [**`README-display-layouts.md`**](./README-display-layouts.md) | Architecture and user guide for hardware-identified multi-monitor display layouts |
 | [**`docs/Keybinds.md`**](./docs/Keybinds.md) | Complete reference guide for all default keybindings and shortcuts |
 
-### 📄 License
+### 📄 License & Attribution
 
-Licensed under the [GNU General Public License v3.0](LICENSE.md).
-Based upon original work by [LinuxBeginnings](https://github.com/LinuxBeginnings/Hyprland-Dots).
+- **Root Repository**: [https://github.com/LinuxBeginnings/Hyprland-Dots](https://github.com/LinuxBeginnings/Hyprland-Dots)
+- **Custom Version & Independent Maintenance**: This project is an independent custom version maintained on its own by [ajaykumarreddy-k](https://github.com/ajaykumarreddy-k) with custom bug fixes, enhancements, and standalone development.
+- **License**: Licensed under the [GNU General Public License v3.0](LICENSE.md).
+- Based upon original work by [LinuxBeginnings](https://github.com/LinuxBeginnings/Hyprland-Dots).
