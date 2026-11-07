@@ -1,0 +1,20 @@
+# Managed by the display-layout system: see README-display-profiles.md.
+
+# A .lua file in this directory is a PROFILE: a set of hl.monitor rules matched by
+# port, which Hyprland applies at every config load. Work.lua ships as an example.
+
+# Choose one from Quick Settings (SUPER + SHIFT + E) -> Choose Monitor Profiles.
+# That applies its rules, then saves what is on screen as a layout for the
+# monitors you have connected, so SUPER + ALT + W applies a layout named Work
+# from then on.
+
+# For an arrangement that follows the monitor rather than the port, save a layout
+# from the layout menu (SUPER + ALT + D) instead: that is keyed by device, so it
+# still applies when a monitor is moved to a different port.
+
+# Adding your own file here is supported. Name it after the layout you want
+# (letters, digits, space, dot, dash and underscore), then import it the same way.
+
+# Do NOT add require("monitors") to your Hyprland config. On nwg-displays 0.4.3+
+# that loads the Lua file nwg writes next to its .conf, and it would then compete
+# with UserConfigs/monitors.lua.

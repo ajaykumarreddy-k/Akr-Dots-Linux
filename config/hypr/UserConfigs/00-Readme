@@ -1,0 +1,19 @@
+# ==================================================
+#  akr-dots (2026)
+#  Maintainer: ajaykumarreddy-k
+#  Base Upstream: https://github.com/LinuxBeginnings/Hyprland-Dots
+#  License: GNU GPLv3
+#  SPDX-License-Identifier: GPL-3.0-or-later
+# ==================================================
+
+akr-dots (Ajay Kumar Reddy)
+
+1.) Suggest not to rename any files in this directory. As this is connected and being loaded from hyprland.lua in ~/.config/hypr
+
+2.) This directory, along with UserScripts directory, is preserved when running copy.sh (install/upgrade/express) - your edits are NOT overwritten. However, selected non-destructive fixes may be applied automatically via the scripts in the repo's patches/ directory. Those patches only add/adjust a specific setting and never replace your files. See docs/Patching-UserConfigs.md.
+
+3.) However, if hyprland has a big change in settings, i.e., blur section is moved into another group, you should manage the change yourself.
+
+4.) Guidance on the keybinds: You can freely customize your personal keybinds in user_keybinds.lua.
+
+5.) Check CHANGELOG.md for changes and updates.
