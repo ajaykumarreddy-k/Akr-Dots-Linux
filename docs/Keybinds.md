@@ -174,6 +174,7 @@ Source: `config/hypr/UserConfigs/user_keybinds.lua`, not the system file
 - `SUPER + CTRL + Tab` — Hyprview Toggle (`toggle-qs-hyprview.sh smartgrid`)
 
 ## Screenshots
+- `Print` (or `F6`) — GNOME interactive screenshot UI (`ScreenShot.sh --interactive`)
 - `SUPER + Print` — Screenshot now (`ScreenShot.sh --now`)
 - `SUPER + SHIFT + Print` — Screenshot area (`ScreenShot.sh --area`)
 - `SUPER + CTRL + Print` — Screenshot in 5s (`ScreenShot.sh --in5`)

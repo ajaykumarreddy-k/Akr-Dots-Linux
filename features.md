@@ -49,6 +49,15 @@ akr-dots includes an interactive Wallpaper Selector (**`SUPER` + `W`**) with dyn
 
 ---
 
+## 📸 Interactive Screenshot Experience (PRTSCR / GNOME UI)
+
+- **Dedicated `Print` (PRTSCR) Keybind**: Pressing `Print` (or `F6`) alone directly invokes the interactive GNOME Screenshot UI dialog, replacing the old multi-key `SUPER + Print` requirement.
+- **Interactive Controls**: Choose between capturing an interactive area selection, the full screen, or a specific window with optional delay and cursor capture.
+- **Graceful Fallback**: If `gnome-screenshot` is not present, automatically falls back to Swappy/Grim interactive selection (`ScreenShot.sh --swappy`).
+- **Floating Window Rule**: Pre-configured in `lua/window_rules.lua` to float and center smoothly in Hyprland without disrupting tiled window layouts.
+
+---
+
 ## 🚀 Hyprland Lua VM & User Config Architecture
 
 - **Lua-Powered Configuration**: Fast, type-safe, and modular Hyprland configuration system.

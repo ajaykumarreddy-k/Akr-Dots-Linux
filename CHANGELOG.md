@@ -12,6 +12,11 @@
 
 ## Added:
 
+- Dedicated `Print` keybind for GNOME interactive screenshot UI
+  - Bound bare `Print` and `F6` to `ScreenShot.sh --interactive`
+  - Launches `gnome-screenshot -i` with automatic Swappy fallback
+  - Added floating window rule for `gnome-screenshot` in `window_rules.lua`
+  - Documented in `features.md` and updated `KeyHints.sh`
 - Custom wallpaper addition button in wallpaper selector
   - Added `+ Add Custom Wallpaper` tile to `WallpaperSelect.sh` menu
   - Opens GUI file picker using `zenity`, `yad`, or `kdialog`

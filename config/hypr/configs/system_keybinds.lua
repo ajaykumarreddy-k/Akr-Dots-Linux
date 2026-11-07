@@ -891,6 +891,8 @@ bind("", "xf86TouchpadToggle", exec_cmd("$HOME/.config/hypr/scripts/TouchPad.sh"
 bind("", "xf86Launch1", exec_cmd("rog-control-center"), { description = "ASUS Armory crate button" })
 bind("", "xf86Launch3", exec_cmd("asusctl led-mode -n"), { description = "FN+F4 Switch keyboard RGB profile" })
 bind("", "xf86Launch4", exec_cmd("asusctl profile -n"), { description = "FN+F5 change of fan profiles" })
+-- Dedicated Print Screen (PRTSCR) launches GNOME interactive screenshot UI
+bind("", "Print", exec_cmd("$HOME/.config/hypr/scripts/ScreenShot.sh --interactive"), { description = "GNOME interactive screenshot UI" })
 bind("SUPER", "Print", exec_cmd("$HOME/.config/hypr/scripts/ScreenShot.sh --now"), { description = "screenshot now" })
 bind(
   "SUPER SHIFT",
@@ -923,6 +925,7 @@ bind(
   { description = "screenshot (swappy)" }
 )
 -- Screenshot keybindings using F6 (no PrintSrc button)
+bind("", "F6", exec_cmd("$HOME/.config/hypr/scripts/ScreenShot.sh --interactive"), { description = "GNOME interactive screenshot UI" })
 bind("SUPER", "F6", exec_cmd("$HOME/.config/hypr/scripts/ScreenShot.sh --now"), { description = "screenshot" })
 bind(
   "SUPER SHIFT",

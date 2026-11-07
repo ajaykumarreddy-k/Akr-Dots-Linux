@@ -142,6 +142,16 @@ shotswappy() {
   fi
 }
 
+shotinteractive() {
+	if command -v gnome-screenshot &>/dev/null; then
+		gnome-screenshot -i
+	elif command -v swappy &>/dev/null && command -v grim &>/dev/null && command -v slurp &>/dev/null; then
+		shotswappy
+	else
+		shotarea
+	fi
+}
+
 if [[ ! -d "$dir" ]]; then
 	mkdir -p "$dir"
 fi
@@ -160,8 +170,10 @@ elif [[ "$1" == "--active" ]]; then
 	shotactive
 elif [[ "$1" == "--swappy" || "$1" == "--swapp" || "$1" == "--swap" ]]; then
 	shotswappy
+elif [[ "$1" == "--interactive" || "$1" == "--gnome" || "$1" == "--ui" ]]; then
+	shotinteractive
 else
-	echo -e "Available Options : --now --in5 --in10 --win --area --active --swappy (--swapp/--swap)"
+	echo -e "Available Options : --now --in5 --in10 --win --area --active --swappy (--swapp/--swap) --interactive (--gnome/--ui)"
 fi
 
 exit 0

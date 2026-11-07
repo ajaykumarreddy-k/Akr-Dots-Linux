@@ -51,6 +51,7 @@ GDK_BACKEND=$BACKEND yad \
   " ALT B" "Choose waybar layout" "(waybar layout)" \
   " ALT R" "Reload Waybar swaync Rofi" "CHECK NOTIFICATION FIRST!!!" \
   " SHIFT N" "Launch Notification Panel" "swaync Notification Center" \
+  "Print" "GNOME screenshot UI" "(interactive)" \
   " Print" "screenshot" "(grim)" \
   " Shift Print" "screenshot region" "(grim + slurp)" \
   " Shift S" "screenshot region" "(swappy)" \

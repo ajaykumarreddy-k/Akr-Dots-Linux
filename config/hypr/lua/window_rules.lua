@@ -1108,3 +1108,13 @@ apply_window_rule({
   },
   float = true,
 })
+
+-- GNOME Screenshot interactive dialog
+apply_window_rule({
+  name = "gnome-screenshot",
+  match = {
+    class = "^(gnome-screenshot|org.gnome.Screenshot)$",
+  },
+  float = true,
+  center = true,
+})
