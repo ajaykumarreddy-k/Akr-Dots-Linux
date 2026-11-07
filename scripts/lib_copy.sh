@@ -408,6 +408,13 @@ copy_phase2() {
   fi
 
   install_terminal_configs "$log"
+
+  # Browser flags (Brave, Chrome, Chromium) for Wayland/ANGLE stability
+  for flag_file in brave-flags.conf chrome-flags.conf chromium-flags.conf; do
+    if [ -f "$base/config/$flag_file" ]; then
+      cp -n "$base/config/$flag_file" "${XDG_CONFIG_HOME:-$HOME/.config}/$flag_file" 2>/dev/null || true
+    fi
+  done
 }
 
 # Sync repo-managed quickshell files into an already-installed quickshell

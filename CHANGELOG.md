@@ -1,4 +1,16 @@
-# Changelog — KoolDots
+# Changelog — akr-dots
+
+## v2.3.28.3
+
+## Fixed:
+
+- Chromium-based browser image and media rendering glitch
+  - Added ANGLE OpenGL fallback to eliminate buffer corruption
+  - Shipped `brave-flags.conf`, `chrome-flags.conf`, `chromium-flags.conf`
+  - `lib_copy.sh` deploys browser flag configs to `${XDG_CONFIG_HOME}`
+  - Documented full troubleshooting and Q&A guide in `bugs.md`
+
+---
 
 ## v2.3.28.2
 
