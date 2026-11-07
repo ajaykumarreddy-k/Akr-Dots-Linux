@@ -56,3 +56,4 @@ echo "=========================================================="
 echo "  ✅ akr-dots installation completed successfully!"
 echo "  Reboot or log out, click the gear icon on login, and select Hyprland."
 echo "=========================================================="
+
