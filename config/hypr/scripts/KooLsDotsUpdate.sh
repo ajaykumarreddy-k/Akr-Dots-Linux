@@ -15,10 +15,10 @@ set -euo pipefail
 config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr"
 env_lua="$config_dir/lua/env.lua"
 iDIR="${XDG_CONFIG_HOME:-$HOME/.config}/swaync/images"
-CHANGELOG_URL="https://github.com/ajaykumarreddy-k/akr-dots/blob/main/CHANGELOG.md"
-REMOTE_ENV_URL="https://raw.githubusercontent.com/ajaykumarreddy-k/akr-dots/main/config/hypr/lua/env.lua"
-REMOTE_API_CONTENTS="https://api.github.com/repos/ajaykumarreddy-k/akr-dots/contents/config/hypr"
-REMOTE_TREE_URL="https://github.com/ajaykumarreddy-k/akr-dots/tree/main/config/hypr"
+CHANGELOG_URL="https://github.com/ajaykumarreddy-k/Akr-Dots-Linux/blob/main/CHANGELOG.md"
+REMOTE_ENV_URL="https://raw.githubusercontent.com/ajaykumarreddy-k/Akr-Dots-Linux/main/config/hypr/lua/env.lua"
+REMOTE_API_CONTENTS="https://api.github.com/repos/ajaykumarreddy-k/Akr-Dots-Linux/contents/config/hypr"
+REMOTE_TREE_URL="https://github.com/ajaykumarreddy-k/Akr-Dots-Linux/tree/main/config/hypr"
 
 # Resolve notification icon
 get_icon() {

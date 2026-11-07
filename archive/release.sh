@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # ==================================================
-#  KoolDots (2026)
-#  Project URL: https://github.com/LinuxBeginnings
+#  akr-dots (2026)
+#  Maintainer: ajaykumarreddy-k
+#  Base Upstream: https://github.com/LinuxBeginnings/Hyprland-Dots
 #  License: GNU GPLv3
 #  SPDX-License-Identifier: GPL-3.0-or-later
 # ==================================================
@@ -83,26 +84,26 @@ if [ -f Hyprland-Dots.tar.gz ]; then
   existing_version=$(echo Hyprland-Dots.tar.gz | grep -oP 'v\d+\.\d+\.\d+' | sed 's/v//')
 
   # Fetch the tag_name for the latest release using the GitHub API
-  latest_version=$(curl -s https://api.github.com/repos/LinuxBeginnings/Hyprland-Dots/releases/latest | grep "tag_name" | cut -d '"' -f 4 | sed 's/v//')
+  latest_version=$(curl -s https://api.github.com/repos/ajaykumarreddy-k/Akr-Dots-Linux/releases/latest | grep "tag_name" | cut -d '"' -f 4 | sed 's/v//')
 
   # Check if versions match
   if [ "$existing_version" = "$latest_version" ]; then
-    echo -e "${OK} Hyprland-Dots.tar.gz is up-to-date with the latest release ($latest_version)."
+    echo -e "${OK} akr-dots.tar.gz is up-to-date with the latest release ($latest_version)."
     
     # Sleep for 10 seconds before exiting
     printf "${NOTE} No update found. Sleeping for 10 seconds...\n"
     sleep 10
     exit 0
   else
-    echo -e "${WARN} Hyprland-Dots.tar.gz is outdated (Existing version: $existing_version, Latest version: $latest_version)."
+    echo -e "${WARN} akr-dots.tar.gz is outdated (Existing version: $existing_version, Latest version: $latest_version)."
     read -p "Do you want to upgrade to the latest version? (y/n): " upgrade_choice
     if [ "$upgrade_choice" = "y" ]; then
 		echo -e "${NOTE} Proceeding to download the latest release."
 		
-		# Delete existing directories starting with LinuxBeginnings-Hyprland-Dots
-      find . -type d -name 'LinuxBeginnings-Hyprland-Dots*' -exec rm -rf {} +
-      rm -f Hyprland-Dots.tar.gz
-      printf "${WARN} Removed existing Hyprland-Dots.tar.gz.\n"
+		# Delete existing directories starting with akr-dots
+      find . -type d -name 'akr-dots*' -exec rm -rf {} +
+      rm -f akr-dots.tar.gz
+      printf "${WARN} Removed existing akr-dots.tar.gz.\n"
     else
       echo -e "${NOTE} User chose not to upgrade. Exiting..."
       exit 0
@@ -110,10 +111,10 @@ if [ -f Hyprland-Dots.tar.gz ]; then
   fi
 fi
 
-printf "${NOTE} Downloading the latest Hyprland source code release...\n"
+printf "${NOTE} Downloading the latest akr-dots source code release...\n"
 
 # Fetch the tag name for the latest release using the GitHub API
-latest_tag=$(curl -s https://api.github.com/repos/LinuxBeginnings/Hyprland-Dots/releases/latest | grep "tag_name" | cut -d '"' -f 4)
+latest_tag=$(curl -s https://api.github.com/repos/ajaykumarreddy-k/Akr-Dots-Linux/releases/latest | grep "tag_name" | cut -d '"' -f 4)
 
 # Check if the tag is obtained successfully
 if [ -z "$latest_tag" ]; then
@@ -122,7 +123,7 @@ if [ -z "$latest_tag" ]; then
 fi
 
 # Fetch the tarball URL for the latest release using the GitHub API
-latest_tarball_url=$(curl -s https://api.github.com/repos/LinuxBeginnings/Hyprland-Dots/releases/latest | grep "tarball_url" | cut -d '"' -f 4)
+latest_tarball_url=$(curl -s https://api.github.com/repos/ajaykumarreddy-k/Akr-Dots-Linux/releases/latest | grep "tarball_url" | cut -d '"' -f 4)
 
 # Check if the URL is obtained successfully
 if [ -z "$latest_tarball_url" ]; then
@@ -131,23 +132,23 @@ if [ -z "$latest_tarball_url" ]; then
 fi
 
 # Get the filename from the URL and include the tag name in the file name
-file_name="Hyprland-Dots-${latest_tag}.tar.gz"
+file_name="akr-dots-${latest_tag}.tar.gz"
 
 # Download the latest release source code tarball to the current directory
 if curl -L "$latest_tarball_url" -o "$file_name"; then
   # Extract the contents of the tarball
   tar -xzf "$file_name" || exit 1
 
-  # delete existing Hyprland-Dots
-  rm -rf LinuxBeginnings-Hyprland-Dots
+  # delete existing akr-dots
+  rm -rf akr-dots
 
   # Identify the extracted directory
   extracted_directory=$(tar -tf "$file_name" | grep -o '^[^/]\+' | uniq)
 
-  # Rename the extracted directory to LinuxBeginnings-Hyprland-Dots
-  mv "$extracted_directory" LinuxBeginnings-Hyprland-Dots || exit 1
+  # Rename the extracted directory to akr-dots
+  mv "$extracted_directory" akr-dots || exit 1
 
-  cd "LinuxBeginnings-Hyprland-Dots" || exit 1
+  cd "akr-dots" || exit 1
 
   # Set execute permission for copy.sh and execute it
   chmod +x copy.sh

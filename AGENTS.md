@@ -44,7 +44,7 @@ The user's interactive shell is **zsh** (currently 5.9.2) on ~98% of their syste
 ## Remote
 
 - `git push` prints `remote: This repository moved. Please use the new location:` when the URL GitHub holds for the repo differs from `origin`'s.
-- That URL is canonical. Correct `origin` to it and say so: `git remote set-url origin git@github.com:ajaykumarreddy-k/akr-dots.git`.
+- That URL is canonical. Correct `origin` to it and say so: `git remote set-url origin git@github.com:ajaykumarreddy-k/Akr-Dots-Linux.git`.
 - Keep the transport already in use. This repo is SSH, so a corrected URL stays `git@github.com:...`, never `https://`.
 - Do not defer it: GitHub redirects the old path, so nothing fails loudly and every later push repeats the warning.
 - The difference is usually only the case of the org name (`Linuxbeginnings` against `LinuxBeginnings`), but treat whatever URL GitHub names as the one to use.

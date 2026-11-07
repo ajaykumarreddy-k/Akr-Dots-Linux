@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # ==================================================
-#  KoolDots (2026)
-#  Project URL: https://github.com/LinuxBeginnings
+#  akr-dots (2026)
+#  Maintainer: ajaykumarreddy-k
+#  Base Upstream: https://github.com/LinuxBeginnings/Hyprland-Dots
 #  License: GNU GPLv3
 #  SPDX-License-Identifier: GPL-3.0-or-later
 # ==================================================
@@ -25,7 +26,7 @@ ok() { printf "%b\n" "${GREEN}✔${RESET} $*"; }
 warn() { printf "%b\n" "${YELLOW}⚠${RESET} $*"; }
 err() { printf "%b\n" "${RED}✖${RESET} $*"; }
 
-log "${BOLD}Hyprland-Dots updater${RESET}"
+log "${BOLD}akr-dots updater${RESET}"
 
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   err "Not inside a git repository."

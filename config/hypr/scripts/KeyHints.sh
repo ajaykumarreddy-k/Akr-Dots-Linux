@@ -78,4 +78,4 @@ GDK_BACKEND=$BACKEND yad \
   " ALT E" "Rofi Emoticons" "Emoticon" \
   " H" "Launch this Quick Cheat Sheet" "" \
   "" "" "" \
-  "akr-dots:" "https://github.com/ajaykumarreddy-k/akr-dots" ""
+  "akr-dots:" "https://github.com/ajaykumarreddy-k/Akr-Dots-Linux" ""

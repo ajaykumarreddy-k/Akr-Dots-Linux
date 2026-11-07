@@ -44,7 +44,7 @@
 #### 1. Clone the repository
 
 ```bash
-git clone --depth=1 https://github.com/ajaykumarreddy-k/akr-dots.git && cd akr-dots
+git clone --depth=1 https://github.com/ajaykumarreddy-k/Akr-Dots-Linux.git && cd Akr-Dots-Linux
 ```
 
 #### 2. Run the copy script
