@@ -162,7 +162,7 @@ set_workspace_layout_rule() {
   ws_escaped="$(escape_lua_string "$workspace_selector")"
   monitor_escaped="$(escape_lua_string "$monitor_name")"
   target_escaped="$(escape_lua_string "$target")"
-  output="$(hyprctl eval "hl.workspace_rule({ workspace = \"${ws_escaped}\", monitor = \"${monitor_escaped}\", layout = \"${target_escaped}\" })" 2>&1 || true)"
+  output="$(hyprctl eval "hl.workspace_rule({ workspace = \"${ws_escaped}\", monitor = \"${monitor_escaped}\", layout = \"${target_escaped}\" }); if hl and hl.config then hl.config({ general = { layout = \"${target_escaped}\" } }) end" 2>&1 || true)"
 
   if ! is_ok_output "$output"; then
     echo "$output" >&2
@@ -200,6 +200,9 @@ set_layout() {
   actual="$(wait_for_layout "$target")"
   if [[ "$actual" == "$target" ]]; then
     persist_current_workspace_layout "$target"
+    if [[ "$target" == "scrolling" ]]; then
+      hyprctl dispatch 'hl.dsp.layout("colresize 0.5")' >/dev/null 2>&1 || true
+    fi
     hypr_emit_event "kool:layout"
     if [[ "$quiet_mode" -eq 0 ]]; then
       notify-send -e -u low -i "$notif" " ${actual^} Layout · WS ${workspace_label}${monitor_name:+ @ ${monitor_name}}"

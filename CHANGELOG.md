@@ -4,6 +4,11 @@
 
 ## Fixed:
 
+- Scrolling layout over-zooming on `SUPER+ALT+3`
+  - Disabled `fullscreen_on_one_column` in `settings.lua`
+  - Defaulted `column_width` to 0.50 for balanced side-by-side tiling
+  - `ChangeLayout.sh` syncs `general:layout` for dispatchers
+  - Resizes existing windows to column preset upon entering scrolling
 - BUG-02: Hover card overlay and tearing in Chromium/Brave browsers
   - Set `--ozone-platform=x11` as default display backend for browsers
   - Enabled `--enable-gpu-rasterization` for full hardware acceleration

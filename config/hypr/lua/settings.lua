@@ -43,8 +43,8 @@ hl.config({
 
 hl.config({
   scrolling = {
-    column_width = 0.80,
-    fullscreen_on_one_column = true,
+    column_width = 0.50,
+    fullscreen_on_one_column = false,
     direction = "right",
     follow_focus = true,
   },
