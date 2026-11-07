@@ -122,7 +122,7 @@
     },
     {
       "type": "command",
-      "key": "             KoolDots Ver ",
+      "key": "             akr-dots Ver ",
       "text": "echo v${DOTS_VERSION}",
       "keyColor": "magenta",
     },

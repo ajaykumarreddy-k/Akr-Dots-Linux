@@ -32,7 +32,7 @@
     // ── Identity header ────────────────────────────────────────────
     // {
     //     "type": "custom",
-    //     "format": "\u001b[1m\u001b[38;5;197m   <---- KoolDots ---->\u001b[0m"
+    //     "format": "\u001b[1m\u001b[38;5;197m   <---- akr-dots ---->\u001b[0m"
     // },
     // "break",
 
@@ -117,7 +117,7 @@
     },
     {
       "type": "command",
-      "key": "    KoolDots",
+      "key": "    akr-dots",
       "text": "echo v${DOTS_VERSION}",
     },
     {
