@@ -11,6 +11,7 @@ This document tracks known bugs, graphical glitches, compatibility issues, and t
 | **BUG-01** | [Images and media glitching when hardware acceleration is enabled](#bug-01-images-and-media-glitching-when-hardware-acceleration-is-enabled-chromium-brave-chrome) | Chromium / Brave / Wayland / Hybrid GPU | **Fixed & Documented** |
 | **BUG-02** | [Hover card overlay, tearing & image corruption fixed with `/opt/brave.com/brave/brave --ozone-platform=x11 --enable-gpu-rasterization`](#bug-02-hover-card-overlay-tearing--image-corruption-fixed-with-optbravecombravebrave---ozone-platformx11---enable-gpu-rasterization) | Brave / Chromium / Wayland Ozone / XWayland | **Fixed & Auto-Applied** |
 | **BUG-03** | [Scrolling layout over-zooming & tape width default (SUPER + ALT + 3)](#bug-03-scrolling-layout-over-zooming--tape-width-default-super--alt--3) | Hyprland Scrolling / ChangeLayout / PersistWorkspaceLayout | **Fixed & Auto-Applied** |
+| **BUG-04** | [VLC video pinned to top-left corner with black right/bottom margins on Wayland](#bug-04-vlc-video-pinned-to-top-left-corner-with-black-rightbottom-margins-on-wayland) | VLC / Qt5 Wayland / D-Bus / XWayland | **Fixed & Auto-Applied** |
 
 ---
 
@@ -204,3 +205,43 @@ When activating the **Scrolling layout** (via keyboard shortcut **`SUPER` + `ALT
    ```
    Window size reflects `1612` (85%) with clean side placement and zero over-zooming.
 3. Cycle column widths with **`SUPER` + `R`** or navigate columns with **`SUPER` + `L` / `SUPER` + `H`** (or **`SUPER` + `Left` / `Right`**).
+
+---
+
+## BUG-04: VLC Video Pinned to Top-Left Corner with Black Right/Bottom Margins on Wayland
+
+### Overview
+When launching **VLC 3.x (Qt5)** on Hyprland — especially by opening a video from **Nautilus** or another D-Bus-activated file manager — the outer Qt window and menu/playback controls tile and scale properly, but the rendered video frame is pinned to the top-left corner inside the video pane, leaving solid black margins along both the right side and the bottom of the widget.
+
+### Root Cause
+1. **Missing `DISPLAY` in D-Bus / Systemd Activation Environment**:
+   - `config/hypr/lua/startup.lua` exported `WAYLAND_DISPLAY`, `HYPRLAND_INSTANCE_SIGNATURE`, and `XDG_CURRENT_DESKTOP` via `dbus-update-activation-environment --systemd` and `systemctl --user import-environment`, but omitted `DISPLAY`.
+   - File managers started over D-Bus (`nautilus --gapplication-service`) therefore lacked `DISPLAY` in their environment when spawning VLC.
+2. **Qt5 Wayland `wl_subsurface` Resize Bug in VLC 3.x**:
+   - With `DISPLAY` unset (or without `QT_QPA_PLATFORM=xcb`), VLC 3's Qt5 UI loads `libqwayland-generic.so` and renders video through an embedded `egl_wl` (`wl_subsurface`).
+   - VLC 3's Qt5 `wl_subsurface` does not track tiled/resized Hyprland surface geometry cleanly, leaving the video subsurface smaller than the `VideoWidget` container and pinned at `(0, 0)` with black dead space on the right and bottom.
+
+---
+
+### The Fix (Auto-Applied): Force Qt5 VLC onto XWayland (`xcb`) + Propagate `DISPLAY`
+
+1. **VLC Wrapper Runner (`config/hypr/scripts/vlc-runner.sh`)**:
+   - Recovers `DISPLAY` from `/tmp/.X11-unix/X*` if unset (covering D-Bus launches without restarting the session).
+   - Exports `QT_QPA_PLATFORM="xcb"` whenever `DISPLAY` is available so Qt5 loads `libqxcb.so` and uses an X11 `VideoWidget` with GLX output and automatic hardware decode (VDPAU/VAAPI).
+   - Resolves and executes the underlying system `vlc` binary without recursion.
+
+2. **Startup D-Bus Environment Sync (`config/hypr/lua/startup.lua`)**:
+   - Included `DISPLAY` in both `dbus-update-activation-environment --systemd` and `systemctl --user import-environment` at Hyprland startup so Nautilus and user services always receive `DISPLAY`.
+
+3. **Installer Integration (`scripts/lib_copy.sh`)**:
+   - Added `install_vlc_wrapper()` so `copy.sh` automatically makes `vlc-runner.sh` executable, links `~/.local/bin/vlc`, and generates `~/.local/share/applications/vlc.desktop` pointing `Exec=` to `vlc-runner.sh` (preserving system MIME types and categories), then refreshes the desktop database via `update-desktop-database`.
+
+---
+
+### Verification
+1. Open a video from Nautilus or launch `vlc` from Rofi/terminal.
+2. Verify VLC runs under XWayland and fills its full container:
+   ```bash
+   hyprctl -j clients | jq '.[] | select(.class == "vlc") | {pid, class, size, xwayland}'
+   ```
+   `"xwayland"` reports `true` and the video frame fills 100% of the VLC viewport with zero top-left pinning or black right/bottom margins.

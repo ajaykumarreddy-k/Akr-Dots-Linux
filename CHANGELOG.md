@@ -4,6 +4,12 @@
 
 ## Fixed:
 
+- BUG-04: VLC video pinned top-left with black margins on Wayland
+  - Added `vlc-runner.sh` wrapper forcing `QT_QPA_PLATFORM=xcb` on XWayland
+  - Recovers `DISPLAY` from `/tmp/.X11-unix/X*` for D-Bus launched sessions
+  - Added `DISPLAY` to D-Bus/systemd import commands in `startup.lua`
+  - Auto-deploys `~/.local/bin/vlc` and `vlc.desktop` via `lib_copy.sh`
+  - Documented root cause and verification in `bugs.md`
 - BUG-03: Scrolling layout over-zooming on `SUPER+ALT+3`
   - Disabled `fullscreen_on_one_column` in `settings.lua`
   - Defaulted `column_width` to 0.85 with side tape peek
