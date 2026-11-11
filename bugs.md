@@ -228,13 +228,15 @@ When launching **VLC 3.x (Qt5)** on Hyprland — especially by opening a video f
 1. **VLC Wrapper Runner (`config/hypr/scripts/vlc-runner.sh`)**:
    - Recovers `DISPLAY` from `/tmp/.X11-unix/X*` if unset (covering D-Bus launches without restarting the session).
    - Exports `QT_QPA_PLATFORM="xcb"` whenever `DISPLAY` is available so Qt5 loads `libqxcb.so` and uses an X11 `VideoWidget` with GLX output and automatic hardware decode (VDPAU/VAAPI).
+   - Provides `--sync-desktop` (and runs automatically before launching `vlc`) to link `~/.local/bin/vlc`, override `~/.local/share/applications/vlc.desktop` with `Exec=$HOME/.config/hypr/scripts/vlc-runner.sh --started-from-file %U` (preserving system MIME types), and refresh the desktop database.
    - Resolves and executes the underlying system `vlc` binary without recursion.
 
-2. **Startup D-Bus Environment Sync (`config/hypr/lua/startup.lua`)**:
-   - Included `DISPLAY` in both `dbus-update-activation-environment --systemd` and `systemctl --user import-environment` at Hyprland startup so Nautilus and user services always receive `DISPLAY`.
+2. **Startup D-Bus Environment & Post-Install Sync (`config/hypr/lua/startup.lua`)**:
+   - Included `DISPLAY` and `PATH` in both `dbus-update-activation-environment --systemd` and `systemctl --user import-environment` at Hyprland startup so Nautilus and user services inherit them.
+   - Runs `vlc-runner.sh --sync-desktop` at startup so even if VLC is installed after `akr-dots`, `~/.local/bin/vlc` and `vlc.desktop` stay synced automatically.
 
-3. **Installer Integration (`scripts/lib_copy.sh`)**:
-   - Added `install_vlc_wrapper()` so `copy.sh` automatically makes `vlc-runner.sh` executable, links `~/.local/bin/vlc`, and generates `~/.local/share/applications/vlc.desktop` pointing `Exec=` to `vlc-runner.sh` (preserving system MIME types and categories), then refreshes the desktop database via `update-desktop-database`.
+3. **Installer Integration (`scripts/lib_copy.sh`, `install.sh`, `install-ubuntu.sh`)**:
+   - Added `install_vlc_wrapper()` so `copy.sh` marks `vlc-runner.sh` executable and runs `vlc-runner.sh --sync-desktop` automatically during fresh installs and upgrades.
 
 ---
 

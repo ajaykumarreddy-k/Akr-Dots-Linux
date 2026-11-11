@@ -531,40 +531,11 @@ EOF
 install_vlc_wrapper() {
   local log="$1"
   local cfg_dir="${XDG_CONFIG_HOME:-$HOME/.config}"
-  local bin_dir="$HOME/.local/bin"
-  local app_dir="$HOME/.local/share/applications"
   local vlc_runner="$cfg_dir/hypr/scripts/vlc-runner.sh"
-
-  mkdir -p "$bin_dir" "$app_dir"
 
   if [ -f "$vlc_runner" ]; then
     chmod +x "$vlc_runner" 2>/dev/null || true
-    ln -sf "$vlc_runner" "$bin_dir/vlc" 2>/dev/null || true
-  fi
-
-  if [ -x "$vlc_runner" ] && { command -v vlc >/dev/null 2>&1 || [ -x /usr/bin/vlc ]; }; then
-    if [ -f /usr/share/applications/vlc.desktop ]; then
-      sed -e "s|^Exec=.*|Exec=$vlc_runner --started-from-file %U|" \
-          -e "s|^TryExec=.*|TryExec=$vlc_runner|" \
-          /usr/share/applications/vlc.desktop | tr -d '\r' > "$app_dir/vlc.desktop"
-    else
-      cat > "$app_dir/vlc.desktop" <<EOF
-[Desktop Entry]
-Version=1.0
-Name=VLC media player
-GenericName=Media player
-Comment=Read, capture, broadcast your multimedia streams
-Exec=$vlc_runner --started-from-file %U
-TryExec=$vlc_runner
-Icon=vlc
-Terminal=false
-Type=Application
-Categories=AudioVideo;Player;Recorder;
-MimeType=application/ogg;application/x-ogg;audio/ogg;video/ogg;video/x-msvideo;video/mp4;video/x-m4v;video/quicktime;application/x-matroska;audio/x-matroska;video/x-matroska;video/webm;video/x-flv;audio/mpeg;audio/flac;audio/wav;
-Keywords=Player;Capture;DVD;Audio;Video;Server;Broadcast;
-EOF
-    fi
-    update-desktop-database "$app_dir" 2>/dev/null || true
+    "$vlc_runner" --sync-desktop 2>/dev/null || true
   fi
 }
 

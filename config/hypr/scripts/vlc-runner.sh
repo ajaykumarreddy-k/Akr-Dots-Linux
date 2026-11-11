@@ -33,10 +33,65 @@ resolve_real_vlc() {
   return 1
 }
 
+sync_vlc_desktop() {
+  local bin_dir="$HOME/.local/bin"
+  local app_dir="$HOME/.local/share/applications"
+  local target_desktop="$app_dir/vlc.desktop"
+  local src_desktop="" cand
+
+  mkdir -p "$bin_dir" "$app_dir"
+  ln -sf "$SELF_PATH" "$bin_dir/vlc" 2>/dev/null || true
+
+  resolve_real_vlc >/dev/null 2>&1 || return 0
+
+  # Fast path: desktop override already points Exec= to this wrapper
+  if [[ -f "$target_desktop" ]] && grep -qFx "Exec=$SELF_PATH --started-from-file %U" "$target_desktop" 2>/dev/null; then
+    return 0
+  fi
+
+  for cand in /usr/share/applications/vlc.desktop /var/lib/snapd/desktop/applications/vlc_vlc.desktop; do
+    if [[ -f "$cand" ]]; then
+      src_desktop="$cand"
+      break
+    fi
+  done
+
+  if [[ -n "$src_desktop" ]]; then
+    sed -e "s|^Exec=.*|Exec=$SELF_PATH --started-from-file %U|" \
+        -e "s|^TryExec=.*|TryExec=$SELF_PATH|" \
+        "$src_desktop" | tr -d '\r' > "$target_desktop"
+  else
+    cat > "$target_desktop" <<EOF
+[Desktop Entry]
+Version=1.0
+Name=VLC media player
+GenericName=Media player
+Comment=Read, capture, broadcast your multimedia streams
+Exec=$SELF_PATH --started-from-file %U
+TryExec=$SELF_PATH
+Icon=vlc
+Terminal=false
+Type=Application
+Categories=AudioVideo;Player;Recorder;
+MimeType=application/ogg;application/x-ogg;audio/ogg;video/ogg;video/x-msvideo;video/mp4;video/x-m4v;video/quicktime;application/x-matroska;audio/x-matroska;video/x-matroska;video/webm;video/x-flv;audio/mpeg;audio/flac;audio/wav;
+Keywords=Player;Capture;DVD;Audio;Video;Server;Broadcast;
+EOF
+  fi
+
+  update-desktop-database "$app_dir" 2>/dev/null || true
+}
+
+if [[ "${1:-}" == "--sync-desktop" ]]; then
+  sync_vlc_desktop
+  exit 0
+fi
+
 REAL_VLC="$(resolve_real_vlc)" || {
   echo "vlc-runner: real vlc binary not found" >&2
   exit 127
 }
+
+sync_vlc_desktop
 
 # Recover DISPLAY when launched from a D-Bus service (e.g. Nautilus) that lacks it.
 if [[ -z "${DISPLAY:-}" ]]; then
@@ -52,4 +107,3 @@ if [[ -n "${DISPLAY:-}" ]]; then
 fi
 
 exec "$REAL_VLC" "$@"
-

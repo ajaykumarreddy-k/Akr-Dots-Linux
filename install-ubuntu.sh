@@ -37,7 +37,7 @@ else
 fi
 
 cd "$CLONE_DIR"
-chmod +x Distro-Hyprland.sh copy.sh config/hypr/scripts/browser-flags-runner.sh
+chmod +x Distro-Hyprland.sh copy.sh config/hypr/scripts/browser-flags-runner.sh config/hypr/scripts/vlc-runner.sh
 
 # 3. Check for Hyprland installation
 if command -v Hyprland >/dev/null 2>&1 || command -v hyprland >/dev/null 2>&1; then
