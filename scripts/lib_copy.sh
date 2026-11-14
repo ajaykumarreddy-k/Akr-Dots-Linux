@@ -414,6 +414,9 @@ copy_phase2() {
 
   # VLC XWayland wrapper runner & desktop entry to prevent Qt5 Wayland video surface crop bug
   install_vlc_wrapper "$log"
+
+  # Dotfiles updater scripts isolated to Akr-Dots-Linux
+  sync_update_scripts "$log"
 }
 
 # Install browser flags configuration and launcher wrappers so Debian/Ubuntu/Arch
@@ -536,6 +539,20 @@ install_vlc_wrapper() {
   if [ -f "$vlc_runner" ]; then
     chmod +x "$vlc_runner" 2>/dev/null || true
     "$vlc_runner" --sync-desktop 2>/dev/null || true
+  fi
+}
+
+# Sync dotfiles updater scripts so Waybar and user checks query Akr-Dots-Linux
+sync_update_scripts() {
+  local log="${1:-/dev/null}"
+  local base="${DOTFILES_DIR:-.}"
+  local target_dir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/scripts"
+
+  mkdir -p "$target_dir"
+  if [ -f "$base/config/hypr/scripts/KooLsDotsUpdate.sh" ]; then
+    cp -f "$base/config/hypr/scripts/KooLsDotsUpdate.sh" "$target_dir/KooLsDotsUpdate.sh" 2>/dev/null || true
+    chmod +x "$target_dir/KooLsDotsUpdate.sh" 2>/dev/null || true
+    ln -sf "KooLsDotsUpdate.sh" "$target_dir/AkrDotsUpdate.sh" 2>/dev/null || true
   fi
 }
 

@@ -88,7 +88,7 @@ fi
 # Fallback: GitHub Contents API for config/hypr or repo tree
 remote_version=""
 
-remote_env_content=$(curl -fsSL -m 10 -A "Mozilla/5.0" "$REMOTE_ENV_URL" 2>/dev/null || true)
+remote_env_content=$(curl -fsSL -m 10 -H "Cache-Control: no-cache" -A "Mozilla/5.0" "$REMOTE_ENV_URL?t=$(date +%s)" 2>/dev/null || curl -fsSL -m 10 -A "Mozilla/5.0" "$REMOTE_ENV_URL" 2>/dev/null || true)
 if [[ -n "$remote_env_content" ]]; then
   remote_version=$(printf '%s\n' "$remote_env_content" | sed -n -E 's/^[[:space:]]*hl\.env\([[:space:]]*["'\'']DOTS_VERSION["'\''][[:space:]]*,[[:space:]]*["'\'']([^"'\'']+)["'\''].*$/\1/p' | head -n1 || true)
   if [[ -z "$remote_version" ]]; then
@@ -97,16 +97,16 @@ if [[ -n "$remote_env_content" ]]; then
 fi
 
 if [[ -z "$remote_version" ]]; then
-  api_response=$(curl -fsSL -m 10 -A "Mozilla/5.0" "$REMOTE_API_CONTENTS" 2>/dev/null || true)
+  api_response=$(curl -fsSL -m 10 -H "Cache-Control: no-cache" -A "Mozilla/5.0" "$REMOTE_API_CONTENTS" 2>/dev/null || true)
   if [[ -n "$api_response" ]]; then
     remote_version=$(printf '%s\n' "$api_response" | grep -o '"name": *"v[0-9][0-9.]*"' | sed -E 's/.*"v([0-9][0-9.]*)".*/\1/' | sort -V | tail -n1 || true)
   fi
 fi
 
 if [[ -z "$remote_version" ]]; then
-  tree_response=$(curl -fsSL -m 10 -A "Mozilla/5.0" "$REMOTE_TREE_URL" 2>/dev/null || true)
+  tree_response=$(curl -fsSL -m 10 -H "Cache-Control: no-cache" -A "Mozilla/5.0" "$REMOTE_TREE_URL" 2>/dev/null || true)
   if [[ -n "$tree_response" ]]; then
-    remote_version=$(printf '%s\n' "$tree_response" | grep -o 'v[0-9]\+\.[0-9]\+\.[0-9]\+\(\.[0-9]\+\)\?' | sed 's/^v//' | sort -V | tail -n1 || true)
+    remote_version=$(printf '%s\n' "$tree_response" | grep -o 'v[0-9]\+\(\.[0-9]\+\)\+' | sed 's/^v//' | sort -V | tail -n1 || true)
   fi
 fi
 

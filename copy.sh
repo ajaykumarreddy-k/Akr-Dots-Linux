@@ -432,8 +432,8 @@ get_installed_dotfiles_version() {
   local hypr_dir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr"
   if [ -d "$hypr_dir" ]; then
     local ver
-    # 1. Pick the highest semantic version among files named vX.Y.Z
-    ver=$(find "$hypr_dir" -maxdepth 1 -type f -name 'v*.*.*' -printf '%f\n' 2>/dev/null |
+    # 1. Pick the highest semantic version among files named vX.Y[.Z]
+    ver=$(find "$hypr_dir" -maxdepth 1 -type f -name 'v[0-9]*' -printf '%f\n' 2>/dev/null |
       sed 's/^v//' |
       sort -V |
       tail -n1)
@@ -488,7 +488,7 @@ is_kooldots_config() {
   local hypr_dir
   hypr_dir="$(config_home)/hypr"
   [ -d "$hypr_dir" ] || return 1
-  if find "$hypr_dir" -maxdepth 1 -type f -name 'v*.*.*' -print -quit | grep -q .; then
+  if find "$hypr_dir" -maxdepth 1 -type f -name 'v[0-9]*' -print -quit | grep -q .; then
     return 0
   fi
   local installed_ver

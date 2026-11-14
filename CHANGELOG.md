@@ -1,5 +1,50 @@
 # Changelog — akr-dots
 
+## v0.8
+
+## Fixed:
+
+- Dotfiles update checker isolated to `akr-dots` repository
+  - Locked `KooLsDotsUpdate.sh` remote endpoints to `Akr-Dots-Linux`
+  - Added cache-busting headers to GitHub raw environment queries
+  - Prevented upstream Kool repository updates from notifying users
+  - Supported two-part semantic versions in update checks
+  - Added `AkrDotsUpdate.sh` script alias
+  - Ensured `lib_copy.sh` syncs updater scripts automatically
+- BUG-04: VLC video pinned top-left with black margins on Wayland
+  - Added `vlc-runner.sh` wrapper forcing `QT_QPA_PLATFORM=xcb` on XWayland
+  - Recovers `DISPLAY` from `/tmp/.X11-unix/X*` for D-Bus launched sessions
+  - Added `DISPLAY` to D-Bus/systemd import commands in `startup.lua`
+  - Auto-deploys `~/.local/bin/vlc` and `vlc.desktop` via `lib_copy.sh`
+  - Documented root cause and verification in `bugs.md`
+- BUG-03: Scrolling layout over-zooming on `SUPER+ALT+3`
+  - Disabled `fullscreen_on_one_column` in `settings.lua`
+  - Defaulted `column_width` to 0.85 with side tape peek
+  - Added 0.85 column width preset to `window_actions.lua`
+  - `ChangeLayout.sh` syncs `general:layout` for dispatchers
+  - Resizes existing windows to 0.85 upon entering scrolling
+  - Fixed commented rule false-match in `PersistWorkspaceLayout.sh`
+- BUG-02: Hover card overlay and tearing in Chromium/Brave browsers
+  - Set `--ozone-platform=x11` as default display backend for browsers
+  - Enabled `--enable-gpu-rasterization` for full hardware acceleration
+  - Eliminates Wayland damage rectangle desync and stale card overlays
+  - Default flags automatically route through `browser-flags-runner.sh`
+  - Deployed absolute `.desktop` overrides for all FreeDesktop menus/Rofi
+  - Ensured fallback defaults in runner if flags configuration is missing
+  - Added comprehensive root cause, reason, and fix to `bugs.md`
+- BUG-01: Chromium image and media rendering corruption on hybrid GPUs
+  - Hybrid GPU detection prevents forced NVIDIA GLX on iGPU Wayland
+  - Shipped `brave-flags.conf`, `chrome-flags.conf`, `chromium-flags.conf`
+  - Documented troubleshooting and Q&A in `bugs.md`
+
+## Added:
+
+- Ubuntu and Universal automated quick install scripts
+  - Added `install-ubuntu.sh` with automatic Hyprland presence detection
+  - Added `install.sh` supporting multiple Linux distributions
+  - Pinned Ubuntu Support quick-copy badge to `README.md`
+  - Integrated `vlc-runner.sh` into installer permission setups
+
 ## v0.7
 
 ## Fixed:
